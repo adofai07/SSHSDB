@@ -2,6 +2,26 @@
 
 이 프로젝트는 설곽에서 이석 등 작업을 편리하게 할 수 있게 해주는 데에 목표가 있다.
 
+## 설치/실행 방법
+
+설치는 다음 명령어를 통해 가능하다.
+
+```bash
+git clone https://github.com/adofai07/SSHSDB
+```
+
+컴파일은 다음 명령어를 통해 가능하다.
+
+```bash
+gcc .\main.c .\getinput.c .\makeaccount.c -o main -lregex
+```
+
+컴파일을 했다면 `main.exe`가 생성되었을 것이다. 이 `main.exe`를 실행하면 된다.
+
+```bash
+& .\main.exe
+```
+
 ## 프로그래밍 스타일
 
 #### 괄호는 K&R 스타일로 한다.
