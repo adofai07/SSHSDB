@@ -62,7 +62,7 @@ int b; // and not this
 /// @param s string
 /// @param len length of string
 /// @return 0 if string is not an integer, 1 if it is
-int is_number(char* s, int len) {
+int is_number(char *s, int len) {
     int chk = 1;
 
     for (int i = 0; i < len; i++) {
