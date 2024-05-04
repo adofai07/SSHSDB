@@ -57,7 +57,7 @@ while (int i = 0; i < 5; i++) {
 int *a, *b;
 ```
 
-#### 주석은 가능하면 그 줄에 주석만 있도록 한다.
+#### 주석은 가능하면 그 줄에 주석만 있도록 한다. `/*`와 `*/`는 사용하지 않는다.
 
 ```c
 // Do this
@@ -114,11 +114,37 @@ struct account {
 typedef struct account account_t;
 ```
 
-#### 단항 연산자는 피연산자와 붙여 쓴다. 이항 연산자는 피연산자와 띄어 쓴다. 단, 함수 호출 연산자 `()`는 함수 이름과 붙여 쓴다.
+#### 단항 연산자는 피연산자와 붙여 쓴다. 이항 연산자는 피연산자와 띄어 쓴다. 단, 함수 호출 연산자 `()`, `->`는 피연산자와 붙여 쓴다.
 
 ```c
 int a = (3 + 5) ^ 5;
 int b = ~a;
+```
+
+#### 함수의 파라미터가 너무 많을 경우 아래와 같이 나눠 적는다. (연산자 뒤에 개행한다.)
+
+```c
+for (int i = 0; i < cnt; i++) {
+    fprintf(fptr, "%s %s %s %d %d %d %d\n",
+            accounts[i].email, accounts[i].password, accounts[i].name, accounts[i].role,
+            accounts[i].student_no, accounts[i].pos_pts, accounts[i].neg_pts);
+}
+```
+
+#### `if`문의 조건식 안에서 할당하지 않는다. `while`문 안에서의 할당은 괜찮다.
+
+```c
+// Good
+new_string = (char *)malloc((len + n_bytes + 1) * sizeof(char));
+
+if (new_string == NULL) {
+    exit(EXIT_FAILURE);
+}
+
+// Bad
+if ((new_string = (char *)malloc((len + n_bytes + 1) * sizeof(char))) == NULL) {
+    exit(EXIT_FAILURE);
+}
 ```
 
 #### (중요) 주석이 아닌 이상 절대 코드에 한국어를 바로 적지 않는다. `\uXXXX`를 사용한다.
@@ -135,6 +161,20 @@ const char *a = "가";
 
 ```c
 char s[7] = "\uC2DC\uBC1C";
+```
+
+#### 기본 헤더파일과 사용자 정의 헤더파일은 빈 줄로 분리한다.
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <regex.h>
+#include <wchar.h>
+#include <locale.h>
+
+#include "makeaccount.h"
+#include "u8string.h"
+#include "typing.h"
 ```
 
 #### 헤더파일을 선언할 때는 함수 파라미터의 이름을 적지 않는다. 또한, `#define`아랫줄과 `#endif` 윗줄에는 한 줄을 띈다.
