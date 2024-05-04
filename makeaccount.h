@@ -3,7 +3,7 @@
 
 struct account;
 struct account new_account();
-int print_accounts();
+void print_accounts();
 int get_accounts();
 int is_valid_email(char *, int);
 int make_account(char *, char *, char *, char *, int, int);

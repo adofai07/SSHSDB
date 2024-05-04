@@ -55,6 +55,27 @@ int a;
 int b; // and not this
 ```
 
+#### 함수에 대한 주석은 `///` 이후에 `@brief`, `@param`, `@return`을 이용한다.
+
+```c
+/// @brief Checks is string is a positive integer
+/// @param s string
+/// @param len length of string
+/// @return 0 if string is not an integer, 1 if it is
+int is_number(char* s, int len) {
+    int chk = 1;
+
+    for (int i = 0; i < len; i++) {
+        if (!('0' <= s[i] && s[i] <= '9')) {
+            chk = 0;
+            break;
+        }
+    }
+
+    return chk;
+}
+```
+
 #### 변수, 함수, 구조체 등의 이름은 snake case로 적는다.
 
 ```c

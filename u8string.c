@@ -3,30 +3,40 @@
 
 #include "u8string.h"
 
-// If character is not the start of string
+/// @brief Checks if byte is a continuation byte
+/// @param c target byte
+/// @return 1 if byte is a continuation byte, 0 elsewise
 int is_continuation(char c) {
     return (c & 0xc0) == 0x80;
 }
 
-// If character is single byte (0xxx xxxx)
+/// @brief Checks if character is single-byte
+/// @param c target character
+/// @return 1 if character is single-byte (0xxx xxxx)
 int is_single_byte(char *c) {
     return (c[0] & 0x80) == 0x0;
 }
 
-// If character is double byte (110x xxxx and continuation byte)
+/// @brief Checks if character is double-byte
+/// @param c target character
+/// @return 1 if character is double-byte (110x xxxx and continuation byte)
 int is_double_byte(char *c) {
     return (c[0] & 0xe0) == 0xc0 && 
            is_continuation(c[1]);
 }
 
-// If character is triple byte (1110 xxxx and continuation byte)
+/// @brief Checks if character is triple-byte
+/// @param c target character
+/// @return 1 if character is triple-byte (1110 xxxx and continuation byte)
 int is_triple_byte(char *c) {
     return (c[0] & 0xf0) == 0xe0 &&
            is_continuation(c[1]) &&
            is_continuation(c[2]);
 }
 
-// If character is quadruple byte (1111 0xxx and continuation byte)
+/// @brief Checks if character is quadruple-byte
+/// @param c target character
+/// @return 1 if character is quadruple-byte (1111 0xxx and continuation byte)
 int is_quadruple_byte(char *c) {
     return (c[0] & 0xf8) == 0xf0 &&
            is_continuation(c[1]) &&
@@ -34,7 +44,9 @@ int is_quadruple_byte(char *c) {
            is_continuation(c[3]);
 }
 
-// Number of bytes in a utf-8 character
+/// @brief Returns the number of bytes in a utf-8 character
+/// @param c target character
+/// @return Number of bytes in a utf-8 character
 int num_bytes(char *c) {
     int len = strlen(c);
     int num_bytes = 0;
@@ -55,7 +67,9 @@ int num_bytes(char *c) {
     return num_bytes;
 }
 
-// utf-8 counterpart of strlen()
+/// @brief utf-8 counterpart of strlen()
+/// @param s target string
+/// @return Number of utf-8 characters in the string
 int u8strlen(const char *s) {
     int len = 0;
 
@@ -67,13 +81,19 @@ int u8strlen(const char *s) {
     return len;
 }
 
-// utf-8 counterpart of strcpy()
-// strcpy() works just fine, but this way is safer
+/// @brief utf-8 counterpart of strcpy()
+/// @param dest source string
+/// @param src destination string
+/// @return pointer to destination string
 char *u8strcpy(char *dest, const char *src) {
-    u8strncpy(dest, src, strlen(src));
+    return u8strncpy(dest, src, strlen(src));
 }
 
-// utf-8 counterpart of strncpy()
+/// @brief utf-8 counterpart of strncpy()
+/// @param dest source string
+/// @param src destination string
+/// @param n number of bytes to copy
+/// @return pointer to destination string
 char *u8strncpy(char *dest, const char *src, int n) {
     int k = n - 1;
     int i;
@@ -98,7 +118,10 @@ char *u8strncpy(char *dest, const char *src, int n) {
     return dest;
 }
 
-// Remove a character from a utf8 string
+/// @brief Removes a character from a utf-8 string
+/// @param s target string
+/// @param n nth byte to remove
+/// @return new string
 char *u8_remove_char(char *s, int n) {
     int len = strlen(s);
 
@@ -117,8 +140,12 @@ char *u8_remove_char(char *s, int n) {
     return new_string;
 }
 
-// Add a character to a utf-8 string
-char *u8_add_char(char * s, char * c, int n) {
+/// @brief Adds a character to a utf-8 string
+/// @param s target string
+/// @param c character to add
+/// @param n nth byte to add
+/// @return new string
+char *u8_add_char(char *s, char *c, int n) {
     int len = strlen(s);
 
     // n cannot be bigger then the string length

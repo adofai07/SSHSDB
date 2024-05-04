@@ -32,6 +32,9 @@ struct account {
 static struct account accounts[100000];
 static int cnt;
 
+
+/// @brief Makes a new account
+/// @return new account
 struct account new_account() {
     // Make it static so that all of its members are zero-initialized
     static struct account ret;
@@ -39,16 +42,15 @@ struct account new_account() {
     return ret;
 }
 
-// Print all accounts
-int print_accounts() {
+/// @brief Prints all accounts
+void print_accounts() {
     for (int i = 0; i < cnt; i++) {
         printf("%s %s %d\n", accounts[i].email, accounts[i].name, accounts[i].role);
     }
-
-    return 0;
 }
 
-// Read all accounts from file
+/// @brief Reads all accounts from file
+/// @return 0 if no errors, 1 if file read error
 int get_accounts() {
     FILE *fptr = fopen("accounts.txt", "r");
     char email[50];
@@ -86,7 +88,8 @@ int get_accounts() {
     return 0;
 }
 
-// Write accounts to file
+/// @brief Writes accounts to file
+/// @return 0 if no errors, 1 if file write error
 int write_accounts() {
     // Delete the file
     if (remove("accounts.txt")) {
@@ -114,7 +117,10 @@ int write_accounts() {
     return 0;
 }
 
-// Email validation
+/// @brief Checks if email is valid
+/// @param s email
+/// @param len length of email
+/// @return 1 if email is valid, 0 if email is invalid, -1 if error
 int is_valid_email(char *s, int len) {
     const char *email_regex = "^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*@([a-z0-9])"
                               "(([a-z0-9-])*([a-z0-9]))+(.([a-z0-9])([-a-z0-9_-])?"
@@ -146,7 +152,6 @@ int is_valid_email(char *s, int len) {
     }
 }
 
-// Check if name is valid. Name should contain 3 korean characters and 0-1 english characters.
 int is_valid_name(char *name) {
     // if (strlen(name) == 3) {
     //     return '가' <= name[0] && name[0] <= '힣' &&
@@ -164,7 +169,14 @@ int is_valid_name(char *name) {
     return 1;
 }
 
-// Make an account, and return a positive integer if there was an error
+/// @brief Makes an account
+/// @param email email
+/// @param name name (can be a utf-8 string)
+/// @param password password
+/// @param confirm_password password (again)
+/// @param role role
+/// @param student_no student number
+/// @return 0 if account is successfully created, positive integer elsewise
 int make_account(char *email, char *name, char *password, char *confirm_password, int role, int student_no) {
     // If password and confirm_password are different
     if (strcmp(password, confirm_password) != 0) {
@@ -206,7 +218,10 @@ int make_account(char *email, char *name, char *password, char *confirm_password
     return 0;
 }
 
-// Log in user by email and password, and return the role
+/// @brief Logs in user by email and password
+/// @param email email
+/// @param password password
+/// @return role of the account, -1 if failed to login
 int login(char *email, char *password) {
     for (int i = 0; i < cnt; i++) {
         if (strcmp(accounts[i].email, email) == 0 && strcmp(accounts[i].password, password) == 0) {
@@ -217,6 +232,7 @@ int login(char *email, char *password) {
     return -1;
 }
 
+/// @brief Prints all accounts
 void print_all_accounts() {
     for (int i = 0; i < cnt; i++) {
         printf("%s %s %d\n", accounts[i].email, accounts[i].password, accounts[i].role);

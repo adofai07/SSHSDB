@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
+
 #include "getinput.h"
 
-// Check if string is a positive number.
+/// @brief Checks is string is a positive integer
+/// @param s string
+/// @param len length of string
+/// @return 0 if string is not an integer, 1 if it is
 int is_number(char* s, int len) {
     int chk = 1;
 
@@ -16,8 +21,13 @@ int is_number(char* s, int len) {
     return chk;
 }
 
-// Convert string to integer.
+/// @brief Converts string to integer
+/// @param s string
+/// @param len length of string
+/// @return integer value of string
 int str_to_int(char* s, int len) {
+    assert(is_number(s, len));
+    
     int ret = 0;
     int p = 1;
 
@@ -29,7 +39,10 @@ int str_to_int(char* s, int len) {
     return ret;
 }
 
-// Get an input from the user until he inputs a number x such that st <= x <= ed. Then return the input.
+/// @brief Gets an input from the user until he inputs a number x such that st <= x <= ed. Then return the input.
+/// @param st minimum value
+/// @param ed maximum value
+/// @return integer from stdin
 int get_input(int st, int ed) {
     char s[50];
 

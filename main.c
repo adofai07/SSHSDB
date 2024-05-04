@@ -99,6 +99,7 @@ int main() {
             } else {
                 system("cls");
                 printf("You are currently logged in as %s.\n\n", email);
+
                 // Print the menu according to the role
                 if (role == 0) {
                     while (1) {
@@ -117,7 +118,6 @@ int main() {
                 }
             }
         }
-
     }
 
     return 0;
