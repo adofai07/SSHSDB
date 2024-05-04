@@ -1,3 +1,7 @@
+#ifndef TYPING_H
+#include "typing.h"
+#endif
+
 #ifndef MAKEACCOUNT_H
 #define MAKEACCOUNT_H
 
@@ -9,5 +13,7 @@ int is_valid_email(char *, int);
 int make_account(char *, char *, char *, char *, int, int);
 void print_all_accounts();
 int login(char *, char *);
+int student_idx(char *);
+account_t *student_ptr(char *);
 
 #endif

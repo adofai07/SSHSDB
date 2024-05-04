@@ -102,6 +102,9 @@
         "*.c": "c",
         "makeaccount.h": "c",
         "iso646.h": "c",
-        "getinput.h": "c"
+        "getinput.h": "c",
+        "assert.h": "c",
+        "typing.h": "c",
+        "locale.h": "c"
     }
 }

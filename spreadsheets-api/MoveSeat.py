@@ -113,7 +113,7 @@ def get_cred():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'C:/SSHS/MoveSeat/MoveSeat.json', SCOPES)
+                'MoveSeat.json', SCOPES)
             creds = flow.run_local_server(port=0)
         with open('MoveSeatToken.json', 'w') as token:
             token.write(creds.to_json())

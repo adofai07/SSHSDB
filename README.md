@@ -13,7 +13,7 @@ git clone https://github.com/adofai07/SSHSDB
 컴파일은 다음 명령어를 통해 가능하다.
 
 ```bash
-gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c -o main -lregex
+gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c -o main -lregex
 ```
 
 컴파일을 했다면 `main.exe`가 생성되었을 것이다. 이 `main.exe`를 실행하면 된다.
@@ -21,6 +21,17 @@ gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c -o main -lregex
 ```bash
 & .\main.exe
 ```
+
+## 역할 분담
+
+|Name|File|
+|:---|:---|
+|최은호|`u8string.c`, `MoveSeat.py`|
+|안준혁|Project Manager|
+|고민재|`main.c`|
+|신믿음|`getsheet.c`|
+|김유현|`getinput.c`|
+|남규영|`typing.h`|
 
 ## 프로그래밍 스타일
 
@@ -86,11 +97,44 @@ int memory_limit;
 int memoryLimit;
 ```
 
+#### 구조체 자료형을 만들 때에는 구조체를 먼저 만들고 `typedef`한다. 또한, 자료형의 이름은 구조체의 이름에 `_t`를 붙인다.
+
+```c
+struct account {
+    char email[50];
+    char password[50];
+    char name[50];
+
+    int role;
+    int student_no;
+    int pos_pts;
+    int neg_pts;
+};
+
+typedef struct account account_t;
+```
+
 #### 단항 연산자는 피연산자와 붙여 쓴다. 이항 연산자는 피연산자와 띄어 쓴다.
 
 ```c
 int a = (3 + 5) ^ 5;
 int b = ~a;
+```
+
+#### (중요) 주석이 아닌 이상 절대 코드에 한국어를 바로 적지 않는다. `\uXXXX`를 사용한다.
+
+```c
+// Good
+const char *a = "\uAC00";
+
+// Bad
+const char *a = "가";
+```
+
+#### 문자열에 한국어를 포함할 때에는 한국어 1글자당 `char` 3글자를 잡는다.
+
+```c
+char s[7] = "\uC2DC\uBC1C";
 ```
 
 #### 헤더파일을 선언할 때는 함수 파리미터의 이름을 적지 않는다. 또한, `#define`아랫줄과 `#endif` 윗줄에는 한 줄을 띈다.

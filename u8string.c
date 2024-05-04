@@ -46,7 +46,7 @@ int is_quadruple_byte(char *c) {
 
 /// @brief Returns the number of bytes in a utf-8 character
 /// @param c target character
-/// @return Number of bytes in a utf-8 character
+/// @return number of bytes in a utf-8 character
 int num_bytes(char *c) {
     int len = strlen(c);
     int num_bytes = 0;
@@ -69,7 +69,7 @@ int num_bytes(char *c) {
 
 /// @brief utf-8 counterpart of strlen()
 /// @param s target string
-/// @return Number of utf-8 characters in the string
+/// @return number of utf-8 characters in the string
 int u8strlen(const char *s) {
     int len = 0;
 

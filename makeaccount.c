@@ -6,38 +6,18 @@
 
 #include "makeaccount.h"
 #include "u8string.h"
-
-enum FIND_BY {
-    EMAIL, NAME, STUDENT_NO
-};
-
-struct account {
-    char email[50];
-    char password[50];
-    char name[50];
-
-    // 0 | Student
-    // 1 | Admin
-    // 2 | Teacher
-
-    int role;
-
-    // Student stats
-    int student_no;
-    int pos_pts;
-    int neg_pts;
-};
+#include "typing.h"
 
 // Set static to avoid name collision with main.c
-static struct account accounts[100000];
+static account_t accounts[100000];
 static int cnt;
 
 
 /// @brief Makes a new account
 /// @return new account
-struct account new_account() {
+account_t new_account() {
     // Make it static so that all of its members are zero-initialized
-    static struct account ret;
+    static account_t ret;
 
     return ret;
 }
@@ -152,21 +132,55 @@ int is_valid_email(char *s, int len) {
     }
 }
 
-int is_valid_name(char *name) {
-    // if (strlen(name) == 3) {
-    //     return '가' <= name[0] && name[0] <= '힣' &&
-    //            '가' <= name[1] && name[1] <= '힣' &&
-    //            '가' <= name[2] && name[2] <= '힣';
-    // } else if (strlen(name) == 4) {
-    //     return '가' <= name[0] && name[0] <= '힣' &&
-    //            '가' <= name[1] && name[1] <= '힣' &&
-    //            '가' <= name[2] && name[2] <= '힣' &&
-    //            'A' <= name[3] && name[3] <= 'Z';
-    // } else {
-    //     return 0;
-    // }
+/// @brief Checks if a given integer is korean
+/// @param s integer
+/// @return 1 if s is korean, 0 if it isn't
+int is_korean(int s) {
+    return 15380608 <= s && s <= 15572643;
+}
 
-    return 1;
+/// @brief Checks if name is valid
+/// @param name name
+/// @return 1 if name is valid, 0 if it isn't
+int is_valid_name(char *name) {
+    if (u8strlen(name) == 3) {
+        if (num_bytes(&name[0]) != 3) return 0;
+        if (num_bytes(&name[3]) != 3) return 0;
+        if (num_bytes(&name[6]) != 3) return 0;
+
+        int bitcat[3] = {0, 0, 0};
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 24; j++) {
+                bitcat[i / 3] |= ((1 << (j % 8)) & name[i]) << ((2 - i % 3) * 8);
+            }
+        }
+
+        return is_korean(bitcat[0]) &&
+               is_korean(bitcat[1]) &&
+               is_korean(bitcat[2]);
+
+    } else if (u8strlen(name) == 4) {
+        if (num_bytes(&name[0]) != 3) return 0;
+        if (num_bytes(&name[3]) != 3) return 0;
+        if (num_bytes(&name[6]) != 3) return 0;
+
+        int bitcat[3] = {0, 0, 0};
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 24; j++) {
+                bitcat[i / 3] |= ((1 << (j % 8)) & name[i]) << ((2 - i % 3) * 8);
+            }
+        }
+
+        return is_korean(bitcat[0]) &&
+               is_korean(bitcat[1]) &&
+               is_korean(bitcat[2]) &&
+               'A' <= name[9] && name[9] <= 'Z';
+
+    } else {
+        return 0;
+    }
 }
 
 /// @brief Makes an account
@@ -206,10 +220,12 @@ int make_account(char *email, char *name, char *password, char *confirm_password
     }
 
     strcpy(accounts[cnt].email, email);
-    u8strcpy(accounts[cnt].name, name);
     strcpy(accounts[cnt].password, password);
+    u8strcpy(accounts[cnt].name, name);
     accounts[cnt].role = role;
-    accounts[cnt].student_no;
+    accounts[cnt].student_no = student_no;
+    accounts[cnt].pos_pts = 0;
+    accounts[cnt].neg_pts = 0;
 
     cnt++;
 
@@ -237,4 +253,30 @@ void print_all_accounts() {
     for (int i = 0; i < cnt; i++) {
         printf("%s %s %d\n", accounts[i].email, accounts[i].password, accounts[i].role);
     }
+}
+
+/// @brief Finds index by email
+/// @param email email
+/// @return index of the student account, -1 if not found
+int student_idx(char *email) {
+    for (int i = 0; i < cnt; i++) {
+        if (strcmp(accounts[i].email, email) == 0) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+/// @brief Finds index by email
+/// @param email email
+/// @return pointer to the student account, -1 if not found
+account_t *student_ptr(char *email) {
+    for (int i = 0; i < cnt; i++) {
+        if (strcmp(accounts[i].email, email) == 0) {
+            return &accounts[i];
+        }
+    }
+
+    return NULL;
 }

@@ -7,12 +7,55 @@
 #include "getinput.h"
 #include "makeaccount.h"
 #include "u8string.h"
+#include "getsheet.h"
+#include "typing.h"
+
+/// @brief The flow will be in this loop as long as the user is logged in as a student account
+/// @return 0 if no errors, non-zero integer if there were errors
+int student_loop(account_t *acc) {
+    int choice;
+
+    while (1) {
+        system("cls");
+        printf("You are currently logged in as %s.\n\n", acc->email);
+        printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n\n>> ");
+
+        choice = get_input(1, 5);
+
+        if (choice == 1) {
+            break;
+
+        } else if (choice == 2) {
+            printf("\n");
+            print_sheet_idx(sheet_idx(acc->student_no));
+            printf("\n\n");
+
+        } else if (choice == 3) {
+            int period;
+
+            printf("What period do you want to change? (1 or 2): ");
+            scanf("%d", &period);
+
+
+        } else if (choice == 4) {
+            char group_name[30];
+
+            printf("Enter a name for the group: ");
+            scanf("%s", group_name);
+        }
+    }
+
+    return 0;
+}
 
 int main() {
+    // utf-8 encoding
     system("chcp 65001");
+
     printf("Welcome to our project\n\n");
 
     get_accounts();
+    get_sheet();
 
     int choice;
     int role;
@@ -20,7 +63,6 @@ int main() {
     while (1) {
         system("cls");
 
-        print_accounts();
         printf("1. Exit\n2. Create account\n3. Sign in\n\n>> ");
         
         choice = get_input(1, 3);
@@ -50,7 +92,7 @@ int main() {
 
             // Enter student number if user is a student
             if (role == 0) {
-                printf("Enter student number: ", &student_no);
+                printf("Enter student number: ");
                 scanf("%d", &student_no);
             }
 
@@ -83,6 +125,9 @@ int main() {
                     printf("Account created successfully.\n\n");
             }
 
+            printf("Press ENTER to return to menu. ");
+            getchar(); while (getchar() != '\n');
+
         } else if (choice == 3) {
             char email[50];
             char password[50];
@@ -97,16 +142,12 @@ int main() {
             if (role == -1) {
                 printf("Login failed.\n\n");
             } else {
-                system("cls");
-                printf("You are currently logged in as %s.\n\n", email);
+                // system("cls");
+                // printf("You are currently logged in as %s.\n\n", email);
 
                 // Print the menu according to the role
                 if (role == 0) {
-                    while (1) {
-                        printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n\n>> ");
-
-                        choice = get_input(1, 5);
-                    }
+                    student_loop(student_ptr(email));
                 } else if (role == 1) {
                     printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n6. Check accounts\n7. Delete account\n\n>> ");
 
