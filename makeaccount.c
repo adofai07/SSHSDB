@@ -1,11 +1,20 @@
-#include "makeaccount.h"
 #include <stdio.h>
 #include <string.h>
 #include <regex.h>
+#include <wchar.h>
+#include <locale.h>
+
+#include "makeaccount.h"
+#include "u8string.h"
+
+enum FIND_BY {
+    EMAIL, NAME, STUDENT_NO
+};
 
 struct account {
     char email[50];
     char password[50];
+    char name[50];
 
     // 0 | Student
     // 1 | Admin
@@ -14,20 +23,41 @@ struct account {
     int role;
 
     // Student stats
+    int student_no;
     int pos_pts;
     int neg_pts;
-    char circle[50];
 };
 
+// Set static to avoid name collision with main.c
 static struct account accounts[100000];
 static int cnt;
+
+struct account new_account() {
+    // Make it static so that all of its members are zero-initialized
+    static struct account ret;
+
+    return ret;
+}
+
+// Print all accounts
+int print_accounts() {
+    for (int i = 0; i < cnt; i++) {
+        printf("%s %s %d\n", accounts[i].email, accounts[i].name, accounts[i].role);
+    }
+
+    return 0;
+}
 
 // Read all accounts from file
 int get_accounts() {
     FILE *fptr = fopen("accounts.txt", "r");
     char email[50];
     char password[50];
+    char name[50];
     int role;
+    int student_no;
+    int pos_pts;
+    int neg_pts;
     int idx = 0;
 
     // Error while opening file
@@ -36,12 +66,17 @@ int get_accounts() {
         return 1;
     }
 
-    while (~fscanf(fptr, "%s %s %d", email, password, &role)) {
+    while (~fscanf(fptr, "%s %s %s %d %d %d %d",
+                   email, password, name, &role, &student_no, &pos_pts, &neg_pts)) {
         // printf("%s %s %d\n", email, password, role);
 
         strcpy(accounts[cnt].email, email);
         strcpy(accounts[cnt].password, password);
+        u8strcpy(accounts[cnt].name, name);
         accounts[cnt].role = role;
+        accounts[cnt].student_no = student_no;
+        accounts[cnt].pos_pts = pos_pts;
+        accounts[cnt].neg_pts = neg_pts;
 
         cnt++;
     }
@@ -69,7 +104,9 @@ int write_accounts() {
     }
 
     for (int i = 0; i < cnt; i++) {
-        fprintf(fptr, "%s %s %d\n", accounts[i].email, accounts[i].password, accounts[i].role);
+        fprintf(fptr, "%s %s %s %d %d %d %d\n",
+                accounts[i].email, accounts[i].password, accounts[i].name, accounts[i].role,
+                accounts[i].student_no, accounts[i].pos_pts, accounts[i].neg_pts);
     }
 
     fclose(fptr);
@@ -78,10 +115,10 @@ int write_accounts() {
 }
 
 // Email validation
-int is_valid_email(char* s, int len) {
-    const char *email_regex =   "^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*@([a-z0-9])"
-                                "(([a-z0-9-])*([a-z0-9]))+(.([a-z0-9])([-a-z0-9_-])?"
-                                "([a-z0-9])+)+$";
+int is_valid_email(char *s, int len) {
+    const char *email_regex = "^([a-z0-9])(([-a-z0-9._])*([a-z0-9]))*@([a-z0-9])"
+                              "(([a-z0-9-])*([a-z0-9]))+(.([a-z0-9])([-a-z0-9_-])?"
+                              "([a-z0-9])+)+$";
     regex_t regex;
 
     int reti = regcomp(&regex, email_regex, REG_EXTENDED);
@@ -109,8 +146,26 @@ int is_valid_email(char* s, int len) {
     }
 }
 
+// Check if name is valid. Name should contain 3 korean characters and 0-1 english characters.
+int is_valid_name(char *name) {
+    // if (strlen(name) == 3) {
+    //     return '가' <= name[0] && name[0] <= '힣' &&
+    //            '가' <= name[1] && name[1] <= '힣' &&
+    //            '가' <= name[2] && name[2] <= '힣';
+    // } else if (strlen(name) == 4) {
+    //     return '가' <= name[0] && name[0] <= '힣' &&
+    //            '가' <= name[1] && name[1] <= '힣' &&
+    //            '가' <= name[2] && name[2] <= '힣' &&
+    //            'A' <= name[3] && name[3] <= 'Z';
+    // } else {
+    //     return 0;
+    // }
+
+    return 1;
+}
+
 // Make an account, and return a positive integer if there was an error
-int make_account(char* email, char* password, char* confirm_password, int role) {
+int make_account(char *email, char *name, char *password, char *confirm_password, int role, int student_no) {
     // If password and confirm_password are different
     if (strcmp(password, confirm_password) != 0) {
         return 1;
@@ -129,9 +184,20 @@ int make_account(char* email, char* password, char* confirm_password, int role) 
         }
     }
 
+    // If name is invalid
+    if (!is_valid_name(name)) {
+        return 4;
+    } 
+
+    if (student_no / 1000 <= 0 || student_no / 1000 >= 4) {
+        return 5;
+    }
+
     strcpy(accounts[cnt].email, email);
+    u8strcpy(accounts[cnt].name, name);
     strcpy(accounts[cnt].password, password);
     accounts[cnt].role = role;
+    accounts[cnt].student_no;
 
     cnt++;
 
@@ -141,7 +207,7 @@ int make_account(char* email, char* password, char* confirm_password, int role) 
 }
 
 // Log in user by email and password, and return the role
-int login(char* email, char* password) {
+int login(char *email, char *password) {
     for (int i = 0; i < cnt; i++) {
         if (strcmp(accounts[i].email, email) == 0 && strcmp(accounts[i].password, password) == 0) {
             return accounts[i].role;

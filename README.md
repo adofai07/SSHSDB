@@ -13,7 +13,7 @@ git clone https://github.com/adofai07/SSHSDB
 컴파일은 다음 명령어를 통해 가능하다.
 
 ```bash
-gcc .\main.c .\getinput.c .\makeaccount.c -o main -lregex
+gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c -o main -lregex
 ```
 
 컴파일을 했다면 `main.exe`가 생성되었을 것이다. 이 `main.exe`를 실행하면 된다.
@@ -78,8 +78,8 @@ int b = ~a;
 #ifndef GETINPUT_H
 #define GETINPUT_H
 
-int is_number(char*, int);
-int str_to_int(char*, int);
+int is_number(char *, int);
+int str_to_int(char *, int);
 int get_input(int, int);
 
 #endif

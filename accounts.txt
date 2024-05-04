@@ -1,3 +1,2 @@
-admin@gmail.com password 1
-chldmsgh695@gmail.com adofai 0
-22115@sshs.hs.kr adofai 0
+admin@gmail.com password 안준혁 1 0 0 0
+22115@sshs.hs.kr adofai07 최은호 0 0 0 0

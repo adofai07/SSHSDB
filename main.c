@@ -6,8 +6,10 @@
 
 #include "getinput.h"
 #include "makeaccount.h"
+#include "u8string.h"
 
 int main() {
+    system("chcp 65001");
     printf("Welcome to our project\n\n");
 
     get_accounts();
@@ -18,6 +20,7 @@ int main() {
     while (1) {
         system("cls");
 
+        print_accounts();
         printf("1. Exit\n2. Create account\n3. Sign in\n\n>> ");
         
         choice = get_input(1, 3);
@@ -28,11 +31,16 @@ int main() {
         } else if (choice == 2) {
             // Create account
             char email[50];
+            char name[50];
             char password[50];
             char confirm_password[50];
+            int student_no = 0;
+            
 
             printf("Enter email: ");
             scanf("%s", email);
+            printf("Enter name: ");
+            scanf("%s", name);
             printf("Enter password: ");
             scanf("%s", password);
             printf("Confirm password: ");
@@ -40,8 +48,14 @@ int main() {
             printf("Enter desired role (0: Student, 1: Admin, 2: Teacher): ");
             scanf("%d", &role);
 
+            // Enter student number if user is a student
+            if (role == 0) {
+                printf("Enter student number: ", &student_no);
+                scanf("%d", &student_no);
+            }
+
             // Make account
-            int is_valid = make_account(email, password, confirm_password, role);
+            int is_valid = make_account(email, name, password, confirm_password, role, student_no);
 
             // In case make_account() failed, print an error message
             switch (is_valid) {
@@ -55,6 +69,14 @@ int main() {
 
                 case 3:
                     printf("There already exists an account with the same email.\n\n");
+                    break;
+
+                case 4:
+                    printf("Your name is invalid. Name should contain 3 korean characters and 0-1 alphabets.\n\n");
+                    break;
+
+                case 5:
+                    printf("Your student number is invalid.\n\n");
                     break;
 
                 default:
