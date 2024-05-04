@@ -44,16 +44,23 @@ int main() {
             int is_valid = make_account(email, password, confirm_password, role);
 
             // In case make_account() failed, print an error message
-            if (is_valid == 1) {
-                printf("Your didn't confirm your password correctly.\n\n");
-            } else if (is_valid == 2) {
-                printf("Your email is invalid.\n\n");
-            } else if (is_valid == 3) {
-                printf("There already exists an account with the same email.\n\n");
-            } else {
-                assert(is_valid == 0);
-                printf("Account created successfully.\n\n");
+            switch (is_valid) {
+                case 1:
+                    printf("Your didn't confirm your password correctly.\n\n");
+                    break;
+
+                case 2:
+                    printf("Your email is invalid.\n\n");
+                    break;
+
+                case 3:
+                    printf("There already exists an account with the same email.\n\n");
+                    break;
+
+                default:
+                    printf("Account created successfully.\n\n");
             }
+
         } else if (choice == 3) {
             char email[50];
             char password[50];

@@ -3,9 +3,9 @@
 
 struct account;
 int get_accounts();
-int is_valid_email(char* s, int len);
-int make_account(char* email, char* password, char* confirm_password, int role);
+int is_valid_email(char*, int);
+int make_account(char*, char*, char*, int);
 void print_all_accounts();
-int login(char* email, char* password);
+int login(char*, char*);
 
 #endif

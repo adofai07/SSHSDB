@@ -12,7 +12,7 @@ int main() {
 }
 ```
 
-#### `while`, `for`문 뒤에는 한 칸을 띄고 한다. 또한, 증감식에는 가능하다면 후위 연산자를 쓴다.
+#### `while`, `for`, `switch`문 뒤에는 한 칸을 띄고 한다. 또한, 증감식에는 가능하다면 후위 연산자를 쓴다.
 
 ```c
 while (int i = 0; i < 5; i++) {
@@ -50,4 +50,17 @@ int memoryLimit;
 ```c
 int a = (3 + 5) ^ 5;
 int b = ~a;
+```
+
+#### 헤더파일을 선언할 때는 함수 파리미터의 이름을 적지 않는다. 또한, `#define`아랫줄과 `#endif` 윗줄에는 한 줄을 띈다.
+
+```c
+#ifndef GETINPUT_H
+#define GETINPUT_H
+
+int is_number(char*, int);
+int str_to_int(char*, int);
+int get_input(int, int);
+
+#endif
 ```

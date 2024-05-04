@@ -12,6 +12,11 @@ struct account {
     // 2 | Teacher
 
     int role;
+
+    // Student stats
+    int pos_pts;
+    int neg_pts;
+    char circle[50];
 };
 
 static struct account accounts[100000];
