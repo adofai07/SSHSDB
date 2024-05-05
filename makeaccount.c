@@ -8,8 +8,10 @@
 #include "u8string.h"
 #include "typing.h"
 
-// Set static to avoid name collision with main.c
-static account_t accounts[100000];
+const int MAX_ACCOUNT_CNT = 1000;
+
+// Set static to avoid name collisions with main.c
+static account_t accounts[1000];
 static int cnt;
 
 
@@ -215,8 +217,14 @@ int make_account(char *email, char *name, char *password, char *confirm_password
         return 4;
     } 
 
+    // If student number is invalid
     if (student_no / 1000 <= 0 || student_no / 1000 >= 4) {
         return 5;
+    }
+
+    // If there are too many accounts
+    if (cnt == MAX_ACCOUNT_CNT) {
+        return 6;
     }
 
     strcpy(accounts[cnt].email, email);
@@ -279,4 +287,17 @@ account_t *student_ptr(char *email) {
     }
 
     return NULL;
+}
+
+/// @brief Finds account by student number
+/// @param sno student number
+/// @return pointer to account_t object if found, NULL if not
+account_t *find_account_by_sno(int sno) {
+    for (int i = 0; i < cnt; i++) {
+        if (accounts[i].student_no == sno) {
+            return &accounts[i];
+        }
+    }
+
+    return (account_t *) NULL;
 }

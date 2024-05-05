@@ -15,5 +15,6 @@ void print_all_accounts();
 int login(char *, char *);
 int student_idx(char *);
 account_t *student_ptr(char *);
+account_t *find_account_by_sno(int);
 
 #endif

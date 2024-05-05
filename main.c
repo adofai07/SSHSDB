@@ -1,14 +1,15 @@
+#include <assert.h>
+#include <iso646.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <iso646.h>
 #include <string.h>
-#include <assert.h>
 
 #include "getinput.h"
-#include "makeaccount.h"
-#include "u8string.h"
 #include "getsheet.h"
+#include "groups.h"
+#include "makeaccount.h"
 #include "typing.h"
+#include "u8string.h"
 
 /// @brief The flow will be in this loop as long as the user is logged in as a student account
 /// @return 0 if no errors, non-zero integer if there were errors
@@ -56,12 +57,14 @@ int main() {
 
     get_accounts();
     get_sheet();
+    get_groups();
 
     int choice;
     int role;
 
     while (1) {
         system("cls");
+        print_groups();
 
         printf("1. Exit\n2. Create account\n3. Sign in\n\n>> ");
         
@@ -119,6 +122,10 @@ int main() {
 
                 case 5:
                     printf("Your student number is invalid.\n\n");
+                    break;
+
+                case 6:
+                    printf("There are too many accounts.\n\n");
                     break;
 
                 default:

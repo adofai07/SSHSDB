@@ -13,7 +13,7 @@ git clone https://github.com/adofai07/SSHSDB
 컴파일은 다음 명령어를 통해 가능하다.
 
 ```bash
-gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c -o main -lregex
+gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c -o main -lregex
 ```
 
 컴파일을 했다면 `main.exe`가 생성되었을 것이다. 이 `main.exe`를 실행하면 된다.
@@ -143,6 +143,16 @@ int a, b = 5, c;
 
 // Bad
 #define min(a, b) (a < b ? a : b)
+```
+
+#### 단순히 상수를 정의할 때에는 `define`을 쓰지 않는다. `const`를 사용한다. 또한, 변수 이름을 모두 대문자로 한다.
+
+```c
+// Good
+const int MAX_GROUP_CNT = 30;
+
+// Bad
+#define MAX_GROUP_CNT 30
 ```
 
 #### 중괄호를 같은 줄에 열고 닫을 때에는 앞뒤로 한 칸씩 띈다.
