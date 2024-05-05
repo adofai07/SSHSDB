@@ -30,8 +30,8 @@ gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c -
 |안준혁|Project Manager|
 |고민재|`main.c`|
 |신믿음|`getsheet.c`|
-|김유현|`getinput.c`|
-|남규영|`typing.h`|
+|김유현|`groups.c`|
+|남규영|`typing.h`, `getinput.c`|
 
 ## 프로그래밍 스타일
 
