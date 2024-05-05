@@ -114,12 +114,15 @@ struct account {
 typedef struct account account_t;
 ```
 
-#### 단항 연산자는 피연산자와 붙여 쓴다. 이항 연산자는 피연산자와 띄어 쓴다. 단, 함수 호출 연산자 `()`, `->`는 피연산자와 붙여 쓴다.
+#### 단항 연산자는 피연산자와 붙여 쓴다. 이항 연산자는 피연산자와 띄어 쓴다. 단, 예외도 존재한다.
 
 ```c
 int a = (3 + 5) ^ 5;
 int b = ~a;
 ```
+
+* 함수 호출 연산자 `()`, `->`는 피연산자와 붙여 쓴다.
+* 타입 캐스팅 연산자는 피연산자와 띄어 쓴다.
 
 #### 함수의 파라미터가 너무 많을 경우 아래와 같이 나눠 적는다. (연산자 뒤에 개행한다.)
 
@@ -135,14 +138,14 @@ for (int i = 0; i < cnt; i++) {
 
 ```c
 // Good
-new_string = (char *)malloc((len + n_bytes + 1) * sizeof(char));
+new_string = (char *) malloc((len + n_bytes + 1) * sizeof(char));
 
 if (new_string == NULL) {
     exit(EXIT_FAILURE);
 }
 
 // Bad
-if ((new_string = (char *)malloc((len + n_bytes + 1) * sizeof(char))) == NULL) {
+if ((new_string = (char *) malloc((len + n_bytes + 1) * sizeof(char))) == NULL) {
     exit(EXIT_FAILURE);
 }
 ```

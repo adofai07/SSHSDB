@@ -131,7 +131,7 @@ char *u8_remove_char(char *s, int n) {
     }
     
     int n_bytes = num_bytes(s + n);
-    char *new_string = (char *)malloc(len * sizeof(char));
+    char *new_string = (char *) malloc(len * sizeof(char));
 
     if (new_string == NULL) {
         exit(EXIT_FAILURE);
@@ -157,7 +157,7 @@ char *u8_add_char(char *s, char *c, int n) {
     }
     
     int n_bytes = num_bytes(c);
-    char *new_string = (char *)malloc((len + n_bytes + 1) * sizeof(char));
+    char *new_string = (char *) malloc((len + n_bytes + 1) * sizeof(char));
 
     if (new_string == NULL) {
         exit(EXIT_FAILURE);
