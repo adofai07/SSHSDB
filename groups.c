@@ -7,7 +7,6 @@
 #include "u8string.h"
 #include "getsheet.h"
 
-
 const int MAX_GROUP_CNT = 100;
 const int MAX_GROUP_SIZE = 100;
 
@@ -48,4 +47,17 @@ void print_groups() {
 
         printf("\n");
     }
+}
+
+/// @brief Makes a group
+/// @param group_name name of group
+/// @param sno_array student number array
+/// @param size student number array size
+/// @return 0 if successfully made group, positive integer elsewise
+int make_group(char *group_name, int *sno_array, int size) {
+    strcpy(groups[cnt].name, group_name);
+    groups[cnt].size = size;
+    memcpy(groups[cnt].members, sno_array, sizeof(int) * size);
+    
+    cnt++;
 }

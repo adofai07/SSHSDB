@@ -8,10 +8,10 @@
 #include "u8string.h"
 #include "typing.h"
 
-const int MAX_ACCOUNT_CNT = 1000;
+#define MAX_ACCOUNT_CNT 1000
 
 // Set static to avoid name collisions with main.c
-static account_t accounts[1000];
+static account_t accounts[MAX_ACCOUNT_CNT];
 static int cnt;
 
 

@@ -11,6 +11,12 @@
 #include "typing.h"
 #include "u8string.h"
 
+/// @brief Pauses flow until ENTER is pressed
+void wait_until_enter() {
+    printf("Press ENTER to return to menu. ");
+    getchar(); while (getchar() != '\n');
+}
+
 /// @brief The flow will be in this loop as long as the user is logged in as a student account
 /// @return 0 if no errors, non-zero integer if there were errors
 int student_loop(account_t *acc) {
@@ -31,6 +37,8 @@ int student_loop(account_t *acc) {
             print_sheet_idx(sheet_idx(acc->student_no));
             printf("\n\n");
 
+            wait_until_enter();
+
         } else if (choice == 3) {
             int period;
 
@@ -40,16 +48,28 @@ int student_loop(account_t *acc) {
 
         } else if (choice == 4) {
             char group_name[30];
+            int group_size;
+            // int group_members[MAX_GROUP_SIZE];
 
             printf("Enter a name for the group: ");
             scanf("%s", group_name);
+            printf("Enter group size: ");
+            scanf("%d", &group_size);
+            printf("Enter student numbers for members. Use spaces as separators. ");
+
+
+        } else if (choice == 5) {
+            print_groups();
+            printf("\n\n");
+
+            wait_until_enter();
         }
     }
 
     return 0;
 }
 
-int main() {
+int start() {
     // utf-8 encoding
     system("chcp 65001");
 
@@ -64,7 +84,6 @@ int main() {
 
     while (1) {
         system("cls");
-        print_groups();
 
         printf("1. Exit\n2. Create account\n3. Sign in\n\n>> ");
         
@@ -132,8 +151,7 @@ int main() {
                     printf("Account created successfully.\n\n");
             }
 
-            printf("Press ENTER to return to menu. ");
-            getchar(); while (getchar() != '\n');
+            wait_until_enter();
 
         } else if (choice == 3) {
             char email[50];
@@ -169,4 +187,8 @@ int main() {
     }
 
     return 0;
+}
+
+int main() {
+    return start();
 }

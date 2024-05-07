@@ -145,16 +145,6 @@ int a, b = 5, c;
 #define min(a, b) (a < b ? a : b)
 ```
 
-#### 단순히 상수를 정의할 때에는 `define`을 쓰지 않는다. `const`를 사용한다. 또한, 변수 이름을 모두 대문자로 한다.
-
-```c
-// Good
-const int MAX_GROUP_CNT = 30;
-
-// Bad
-#define MAX_GROUP_CNT 30
-```
-
 #### 중괄호를 같은 줄에 열고 닫을 때에는 앞뒤로 한 칸씩 띈다.
 
 ```c
