@@ -81,11 +81,11 @@ void print_sheet_idx(int idx) {
 }
 
 /// @brief Finds name by student number
-/// @param sno student number
+/// @param snum student number
 /// @return name, NULL if not found
-char *find_name_by_sno(int sno) {
+char *find_name_by_sno(int snum) {
     for (int i = 0; i < cnt; i++) {
-        if (sheet[i].student_no == sno) {
+        if (sheet[i].student_no == snum) {
             return sheet[i].name;
         }
     }

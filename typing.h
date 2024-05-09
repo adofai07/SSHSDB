@@ -27,7 +27,7 @@ typedef struct account account_t;
 struct group {
     char name[50];
     int size;
-    char members[100][100];
+    int members[100];
 };
 
 typedef struct group group_t;

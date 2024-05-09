@@ -7,11 +7,8 @@
 #include "u8string.h"
 #include "getsheet.h"
 
-const int MAX_GROUP_CNT = 100;
-const int MAX_GROUP_SIZE = 100;
-
 // Set static to avoid name collisions with main.c
-static group_t groups[100];
+static group_t groups[MAX_GROUP_CNT];
 static int cnt = 0;
 
 /// @brief Read groups from file
@@ -29,11 +26,49 @@ int get_groups() {
         for (int i = 0; i < group_size; i++) {
             fscanf(fptr, "%d", &sno);
 
-            u8strcpy(groups[cnt].members[i], find_name_by_sno(sno));
+            groups[cnt].members[i] = sno;
         }
 
         cnt++;
     }
+
+    fclose(fptr);
+
+    return 0;
+}
+
+/// @brief Writes groups to file
+/// @return 0 if no errors, 1 if file write error
+int write_groups() {
+    // Delete the file
+    if (remove("groups.txt")) {
+        fprintf(stderr, "Failed to delete file.\n");
+        return 1;
+    }
+
+    // Recreate the file
+    FILE *fptr = fopen("groups.txt", "w+");
+
+    // Error while opening file
+    if (fptr == NULL) {
+        fprintf(stderr, "Failed to open file.\n");
+        return 1;
+    }
+
+    for (int i = 0; i < cnt; i++) {
+        // printf("Line %d\n", i);
+        fprintf(fptr, "%s %d", groups[i].name, groups[i].size);
+
+        for (int j = 0; j < groups[i].size; j++) {
+            fprintf(fptr, " %d", groups[i].members[j]);
+        }
+
+        fprintf(fptr, "\n");
+    }
+
+    fclose(fptr);
+
+    return 0;
 }
 
 /// @brief Prints all groups
@@ -42,7 +77,8 @@ void print_groups() {
         printf("%s |", groups[i].name);
 
         for (int j = 0; j < groups[i].size; j++) {
-            printf(" %s", groups[i].members[j]);
+            // Struct group stores numbers BUT prints names
+            printf(" %s", find_name_by_sno(groups[i].members[j]));
         }
 
         printf("\n");
@@ -54,10 +90,23 @@ void print_groups() {
 /// @param sno_array student number array
 /// @param size student number array size
 /// @return 0 if successfully made group, positive integer elsewise
-int make_group(char *group_name, int *sno_array, int size) {
+int make_group(char *group_name, const int *sno_array, int size) {
+    // printf("%d %d %d\n", group_name, sno_array, size);
     strcpy(groups[cnt].name, group_name);
     groups[cnt].size = size;
     memcpy(groups[cnt].members, sno_array, sizeof(int) * size);
+
+    // for (int i = 0; i < size; i++) {
+    //     groups[cnt].members[i] = sno_array[i];
+    // }
     
     cnt++;
+
+    return write_groups();
+}
+
+/// @brief Returns the maximum group size
+/// @return maximum group size
+int get_max_group_size() {
+    return MAX_GROUP_SIZE;
 }

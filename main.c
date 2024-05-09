@@ -49,14 +49,22 @@ int student_loop(account_t *acc) {
         } else if (choice == 4) {
             char group_name[30];
             int group_size;
-            // int group_members[MAX_GROUP_SIZE];
+            int group_members[MAX_GROUP_SIZE];
 
             printf("Enter a name for the group: ");
             scanf("%s", group_name);
             printf("Enter group size: ");
-            scanf("%d", &group_size);
-            printf("Enter student numbers for members. Use spaces as separators. ");
+            // scanf("%d", &group_size);
+            group_size = get_input(1, get_max_group_size());
+            printf("Enter student numbers for members. Use spaces/tabs/newlines as separators. ");
 
+            for (int i = 0; i < group_size; i++) {
+                scanf("%d", &group_members[i]);
+            }
+
+            make_group(group_name, group_members, group_size);
+
+            wait_until_enter();
 
         } else if (choice == 5) {
             print_groups();

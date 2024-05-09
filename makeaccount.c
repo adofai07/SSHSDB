@@ -237,9 +237,7 @@ int make_account(char *email, char *name, char *password, char *confirm_password
 
     cnt++;
 
-    write_accounts();
-
-    return 0;
+    return write_accounts();
 }
 
 /// @brief Logs in user by email and password

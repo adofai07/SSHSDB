@@ -105,6 +105,7 @@
         "getinput.h": "c",
         "assert.h": "c",
         "typing.h": "c",
-        "locale.h": "c"
+        "locale.h": "c",
+        "groups.h": "c"
     }
 }

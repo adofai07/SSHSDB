@@ -35,7 +35,7 @@ gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c -
 
 ## 프로그래밍 스타일
 
-#### 괄호는 K&R 스타일로 한다.
+#### 괄호는 One True Brace Style로 한다.
 
 ```c
 int main() {
