@@ -28,10 +28,10 @@ gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c -
 |:---|:---|
 |최은호|`u8string.c`, `MoveSeat.py`|
 |안준혁|Project Manager|
-|고민재|`main.c`|
-|신믿음|`getsheet.c`|
-|김유현|`groups.c`|
-|남규영|`typing.h`, `getinput.c`|
+|고민재|`main.c`, `typing.h`|
+|신믿음|`getsheet.c`, `makeaccount.c`|
+|김유현|`groups.c`, `getinput.c`|
+|남규영|None|
 
 ## 프로그래밍 스타일
 
