@@ -10,6 +10,7 @@
 #include "makeaccount.h"
 #include "typing.h"
 #include "u8string.h"
+#include "getenv.h"
 
 /// @brief Pauses flow until ENTER is pressed
 void wait_until_enter() {

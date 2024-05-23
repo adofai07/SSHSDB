@@ -13,7 +13,7 @@ git clone https://github.com/adofai07/SSHSDB
 컴파일은 다음 명령어를 통해 가능하다.
 
 ```bash
-gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c -o main -lregex
+gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c .\getenv.c -o main -lregex
 ```
 
 컴파일을 했다면 `main.exe`가 생성되었을 것이다. 이 `main.exe`를 실행하면 된다.
@@ -219,3 +219,20 @@ int get_input(int, int);
 
 #endif
 ```
+
+## Files
+
+|Name|What it does|
+|:---|:---|
+|`admin_accountRequest.txt`|pending account log|
+|`admin_recovery.txt`|account recovery requests|
+|`{teacher name}_move.txt`|move request to {teacher name}|
+|`{teacher name}_out.txt`|outing request to {teacher name}|
+|`notifications_global.txt`|global notifications|
+|`notifications_{student id}.txt`|personal notifications: {student id}|
+|`notifications_{teacher name}.txt`|personal notifications: {teacher name}|
+|`notifications_admin.txt`|personal notifications: admin|
+|`alleviations.txt`|list of applicable alleviations|
+|`accounts.txt`|registered account data|
+|`groups.txt`|list of generated groups|
+|`sheet.txt`|sheet data|
