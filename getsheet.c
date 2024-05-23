@@ -73,9 +73,9 @@ void print_sheet() {
 void print_sheet_idx(int idx) {
     for (int i = max(0, idx - 2); i < min(cnt, idx + 3); i++) {
         if (i == idx) {
-            printf("--> %d | %s | %s\n", sheet[i].student_no, sheet[i].p1, sheet[i].p2);
+            printf("--> %4d | %4s | %4s\n", sheet[i].student_no, sheet[i].p1, sheet[i].p2);
         } else {
-            printf("    %d | %s | %s\n", sheet[i].student_no, sheet[i].p1, sheet[i].p2);
+            printf("    %4d | %4s | %4s\n", sheet[i].student_no, sheet[i].p1, sheet[i].p2);
         }
     }
 }
