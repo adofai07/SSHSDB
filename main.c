@@ -12,6 +12,44 @@
 #include "u8string.h"
 #include "getenv.h"
 
+static int t_width = get_terminal_width();
+static int t_height = get_terminal_height();
+
+/// @brief Intro animation at starting page
+void get_logo(int col, int row){
+    FILE *fp = fopen("./logo.txt", "r");
+    if (!fp) {
+        printf("Failed to open logo file.\n");
+        return;
+    }
+
+    char lines[7][97];
+    for (int i=0; i<7; i++){
+        if (fgets(lines[i], sizeof(lines[i]), fp) == NULL) {
+            printf("Error reading file.\n");
+            return;
+        }
+        lines[i][strcspn(lines[i], "\n")] = '\0';
+    }
+
+    int start_row = (row - 7) / 2;  // Center the logo vertically
+    int start_col = (col - 96) / 2;
+    int num_letters = 6;  // Number of letters (each 16 columns wide)
+
+    // Display each letter one by one with a pause
+    for (int j = 0; j < num_letters; j++) {
+        for (int i = 0; i < 7; i++) {
+            printf("\033[%d;%dH", start_row + i, start_col + 16 * j);
+            printf("%.16s", &lines[i][16 * j]);
+            fflush(stdout);  // Ensure the output is updated immediately
+        }
+        usleep(300000);  // Delay for 0.5 seconds
+    }
+    fclose(fp);
+    usleep(1000000);
+    printf("\033[%d;%dH", row - 5, 0);
+}
+
 /// @brief Pauses flow until ENTER is pressed
 void wait_until_enter() {
     printf("Press ENTER to return to menu. ");
@@ -90,7 +128,7 @@ int start() {
     // utf-8 encoding
     system("chcp 65001");
 
-    printf("Welcome to our project\n\n");
+    // printf("Welcome to our project\n\n");
 
     get_accounts();
     get_sheet();
@@ -102,8 +140,9 @@ int start() {
     while (1) {
         system("cls");
 
+        get_logo(t_width, t_height)
         printf("1. Exit\n2. Create account\n3. Sign in\n\n>> ");
-        
+
         choice = get_input(1, 3);
 
         if (choice == 1) {
@@ -116,7 +155,7 @@ int start() {
             char password[50];
             char confirm_password[50];
             int student_no = 0;
-            
+
 
             printf("Enter email: ");
             scanf("%s", email);
