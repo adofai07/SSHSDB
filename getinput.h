@@ -4,5 +4,6 @@
 int is_number(char *, int);
 int str_to_int(char *, int);
 int get_input(int, int);
+int str_is_sno(char *s);
 
 #endif

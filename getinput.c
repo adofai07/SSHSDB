@@ -55,3 +55,17 @@ int get_input(int st, int ed) {
 
     return str_to_int(s, strlen(s));
 }
+
+/// @brief Checks if string is a student number
+/// @param s 
+/// @return 1 if string is a student number, 0 if not
+int str_is_sno(char *s) {
+    if (strlen(s) != 4) {
+        return 0;
+    }
+
+    return '1' <= s[0] && s[0] <= '3' &&
+    '1' <= s[1] && s[1] <= '8' &&
+    '0' <= s[2] && s[2] <= '1' &&
+    '0' <= s[3] && s[3] <= '9';
+}

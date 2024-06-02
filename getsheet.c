@@ -92,3 +92,14 @@ char *find_name_by_sno(int snum) {
 
     return (char *) NULL;
 }
+
+/// @brief Prints all eligible places
+void print_all_places() {
+    FILE *fptr = fopen("places.txt", "w");
+
+    char eng[10], kor[100];
+
+    while(~fscanf(fptr, " %s %s", eng, kor)) {
+        printf("%s | %s\n", eng, kor);
+    }
+}

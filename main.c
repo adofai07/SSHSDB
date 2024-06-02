@@ -42,9 +42,17 @@ int student_loop(account_t *acc) {
 
         } else if (choice == 3) {
             int period;
+            char sno_or_group[30];
+            char place[10];
 
             printf("What period do you want to change? (1 or 2): ");
             scanf("%d", &period);
+            printf("Enter student number or group name: ");
+            scanf(" %s", sno_or_group);
+            printf("Enter place. Eligible places are: \n\n");
+            print_all_places();
+            printf("\n>> ");
+            scanf(" %s", place);
 
 
         } else if (choice == 4) {
