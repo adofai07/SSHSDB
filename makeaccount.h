@@ -7,9 +7,11 @@
 
 struct account;
 struct account new_account();
+int write_accounts();
 void print_accounts();
 int get_accounts();
 int is_valid_email(char *, int);
+int is_valid_name(char *);
 int make_account(char *, char *, char *, char *, int, int);
 void print_all_accounts();
 int login(char *, char *);

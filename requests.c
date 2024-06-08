@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <regex.h>
 #include <string.h>
 
 #include "makeaccount.h"
+
+#define MAX_REQUEST 500
 
 /// @brief generates request files for new teacher user
 /// @param tch pointer to teacher account
@@ -258,10 +261,27 @@ int option_from_path(char *path)
     }
 }
 
+/// @brief returns number of requests in request file
+/// @param fp FILE pointer to file
+/// @return -1 error, integer number of requests in request file if else
+int len_request(FILE *fp)
+{
+    int count = 0;
+    int c;
+    while ((c = getc(fp)) != EOF) {
+        // add count if c == '\n' (각 줄마다 add count)
+        count += (c == '\n');
+    }
+    fclose(fp);
+    fp = NULL;
+    return count;
+}
+
+
 /// @brief writes request to specified file
 /// @param path path to request file
 /// @param request pointer to request string
-/// @return 0 if successful, 1 if file not found, 2 if request not valid
+/// @return 0 if successful, 1 if file not found, 2 if request not valid, 3 if too many requests in file
 int write_request(char *path, char *request)
 {
     int option  = option_from_path(path);
@@ -281,13 +301,86 @@ int write_request(char *path, char *request)
             fclose(fp);
             fp = NULL;
             fp = fopen(req_path, "a");
-            fprintf(fp, "%s\n", request);
-            fclose(fp);
-            fp = NULL;
-            return 0;
+            if (len_request(fp) < MAX_REQUEST) {
+                fprintf(fp, "%s\n", request);
+                fclose(fp);
+                fp = NULL;
+                return 0;
+            } else {
+                fclose(fp);
+                fp = NULL;
+                return 3;
+            }
         }
     } else {
         // request is not valid
         return 2;
     }
+}
+
+/// @brief Prints all requests in a request file
+/// @param path path to request file
+/// @return 0 if successful, 1 if error
+int print_requests(char *path)
+{
+    char line[256];
+    FILE *fp = fopen(path, "r");
+    if (fp == NULL) {
+        return 1;
+    } else {
+        while (fscanf(fp, "%s\n", &line) != EOF) {
+            printf("%s\n", line);
+        }
+        return 0;
+    }
+}
+
+/// @brief load all requests in a request file to an array
+/// @param path 
+/// @return a double pointer pointing to the start of the array, NULL if error
+char **load_requests(char *path)
+{
+    char loader[MAX_REQUEST][256];
+    char line[256];
+    int i = 0
+    FILE *fp = fopen(path, "r");
+    if (fp == NULL) {
+        return NULL;
+    }
+
+    char **lines = NULL;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+    int count = 0;
+    while ((read = getline(&line, &len, fp)) != -1) {
+        // remove newline character
+        if (lne[read - 1] == '\n') {
+            line[read - 1] = '\0';
+            read--;
+        }
+
+        // Allocate space for new line
+        char **new_lines = realloc(lines, (count + 1) * sizeof(char *));
+        if (!new_lines) {
+            perror("Failed to allocate memory");
+            for (int i=0; i<count; i++) {
+                free(lines[i]);
+            }
+            free(lines);
+            free(line);
+            fclose(fp);
+            return NULL;
+        }
+        lines = new_lines;
+        lines[count] = strdup(line);    // Copy line into array
+        if (!lines[count]) {
+            perror("Failed to allocate memory for line");
+            break;
+        }
+        count++;
+    }
+    free(line);     // Free the vuffer allocated by getline
+    fclose(fp);
+    return lines;
 }

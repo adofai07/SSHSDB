@@ -5,6 +5,7 @@
 #include "u8string.h"
 #include "makeaccount.h"
 #include "typing.h"
+#include "reductions.h"
 
 
 // Struct for reduction
@@ -112,15 +113,17 @@ int register_reduction(account_t *tch, struct tm *date0, int time0, const char *
 
     // Error that location is not available
     int found = -1;
-    const char* reduc_loc[22] = {"sem1", "sem2", "sem3", "sem4", "libr",
-                                 "emp1", "emp2", "emp3", "eng1", "eng2", "eng3", "phy1", "phy2",
-                                 "phy3", "ear1", "ear2", "med1", "med2", "scix", "geox", "meet", "hist"};
+    const char* reduc_loc[22] = { "sem1", "sem2", "sem3", "sem4", "libr",
+                                  "emp1", "emp2", "emp3", "eng1", "eng2", "eng3", "phy1", "phy2",
+                                  "phy3", "ear1", "ear2", "med1", "med2", "scix", "geox", "meet", "hist" };
+
     for (int i = 0; i < 22; i++) {
         if (strcmp(loc0, reduc_loc[i]) == 0) {
             found = i;
             break;
         }
     }
+
     if (found == -1) return 2;
 
     // Error that the request is not made to teacher

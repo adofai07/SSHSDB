@@ -105,6 +105,19 @@ int make_group(char *group_name, const int *sno_array, int size) {
     return write_groups();
 }
 
+/// @brief finds group by name
+/// @param name name of group
+/// @return pointer to group if found, NULL if not found
+group_t *find_group_by_name(char *name) {
+    for (int i = 0; i < cnt; i++) {
+        if (strcmp(groups[i].name, name) == 0) {
+            return &groups[i];
+        }
+    }
+
+    return NULL;
+}
+
 /// @brief Returns the maximum group size
 /// @return maximum group size
 int get_max_group_size() {

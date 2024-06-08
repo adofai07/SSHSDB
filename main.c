@@ -3,12 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
+#include "typing.h"
+#include "effects.h"
 #include "getinput.h"
 #include "getsheet.h"
 #include "groups.h"
 #include "makeaccount.h"
-#include "typing.h"
+#include "reductions.h"
 #include "u8string.h"
 #include "getenv.h"
 
@@ -22,25 +25,22 @@ void wait_until_enter() {
 /// @return 0 if no errors, non-zero integer if there were errors
 int student_loop(account_t *acc) {
     int choice;
-
+    
     while (1) {
         system("cls");
-        printf("You are currently logged in as %s.\n\n", acc->email);
-        printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n\n>> ");
 
-        choice = get_input(1, 5);
+        char *c = student_menu(acc);
+        printf("%s", c);
+        free(c);
+        // printf("You are currently logged in as %s.\n\n", acc->email);
+        // printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n\n>> ");
+
+        choice = get_input(1, 7);
 
         if (choice == 1) {
             break;
 
         } else if (choice == 2) {
-            printf("\n");
-            print_sheet_idx(sheet_idx(acc->student_no));
-            printf("\n\n");
-
-            wait_until_enter();
-
-        } else if (choice == 3) {
             int period;
             char sno_or_group[30];
             char place[10];
@@ -54,8 +54,18 @@ int student_loop(account_t *acc) {
             printf("\n>> ");
             scanf(" %s", place);
 
+            if (str_is_sno(sno_or_group)) {
+                set_sheet_by_sno(atoi(sno_or_group), period, place);
+            } else {
+                group_t *gr = find_group_by_name(sno_or_group);
 
-        } else if (choice == 4) {
+                for (int i = 0; i < gr->size; i++) {
+                    set_sheet_by_sno(gr->members[i], period, place);
+                }
+            }
+
+
+        } else if (choice == 3) {
             char group_name[30];
             int group_size;
             int group_members[MAX_GROUP_SIZE];
@@ -75,9 +85,39 @@ int student_loop(account_t *acc) {
 
             wait_until_enter();
 
-        } else if (choice == 5) {
+        } else if (choice == 4) {
             print_groups();
             printf("\n\n");
+
+            wait_until_enter();
+
+        } else if (choice == 5) {
+            // request_reduction(acc, acc->student_no);
+        } else if (choice == 6) {
+            char curr_pw[100];
+            char new_pw[100];
+
+            printf("Current password: ");
+            scanf(" %s", curr_pw);
+            printf("New password: ");
+            scanf(" %s", new_pw);
+
+            if (strcmp(curr_pw, new_pw) == 0) {
+                printf("Your new password cant be the same as the old one.\n");
+                wait_until_enter();
+            } else {
+                account_t *sptr = student_ptr(acc->email);
+                strcpy(sptr->password, new_pw);
+                write_accounts();
+            }
+
+        } else if (choice == 7) {
+            int sno;
+
+            printf("Enter a student number: ");
+            scanf("%d", &sno);
+
+            print_sheet_idx(sheet_idx(sno));
 
             wait_until_enter();
         }
@@ -90,11 +130,17 @@ int start() {
     // utf-8 encoding
     system("chcp 65001");
 
-    printf("Welcome to our project\n\n");
+    effect_init();
+
+    fputs(intro(), stdout);
+
+    printf("Press ENTER to start >> ");
+    while (getchar() != '\n');
 
     get_accounts();
     get_sheet();
     get_groups();
+    get_reductions();
 
     int choice;
     int role;
@@ -102,6 +148,7 @@ int start() {
     while (1) {
         system("cls");
 
+        printf("Terminal size: (%d, %d)\n", get_terminal_height(), get_terminal_width());
         printf("1. Exit\n2. Create account\n3. Sign in\n\n>> ");
         
         choice = get_input(1, 3);

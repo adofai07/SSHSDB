@@ -7,6 +7,7 @@
 int get_groups();
 void print_groups();
 int make_group(char *, const int *, int);
+group_t *find_group_by_name(char *);
 int get_max_group_size();
 
 #endif
