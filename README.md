@@ -13,7 +13,13 @@ git clone https://github.com/adofai07/SSHSDB
 컴파일은 다음 명령어를 통해 가능하다.
 
 ```bash
-gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c .\getenv.c -o main -lregex
+gcc .\main.c .\getinput.c .\makeaccount.c .\u8string.c .\getsheet.c .\groups.c .\getenv.c .\effects.c .\reductions.c .\requests.c .\proposal.c -o main -lregex -fcommon -O0 -Werror
+```
+
+시간대를 `UTC+0`으로 맞춰주자.
+
+```bash
+stz -Id "UTC"
 ```
 
 컴파일을 했다면 `main.exe`가 생성되었을 것이다. 이 `main.exe`를 실행하면 된다.

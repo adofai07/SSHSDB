@@ -16,7 +16,10 @@ int make_account(char *, char *, char *, char *, int, int);
 void print_all_accounts();
 int login(char *, char *);
 int student_idx(char *);
-account_t *student_ptr(char *);
+account_t *account_ptr(char *);
 account_t *find_account_by_sno(int);
+account_t *find_account_by_name(char *);
+account_t *find_account_by_idx(int);
+int account_cnt();
 
 #endif

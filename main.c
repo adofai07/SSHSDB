@@ -11,8 +11,10 @@
 #include "getsheet.h"
 #include "groups.h"
 #include "makeaccount.h"
+#include "requests.h"
 #include "reductions.h"
 #include "u8string.h"
+#include "proposal.h"
 #include "getenv.h"
 
 /// @brief Pauses flow until ENTER is pressed
@@ -25,15 +27,13 @@ void wait_until_enter() {
 /// @return 0 if no errors, non-zero integer if there were errors
 int student_loop(account_t *acc) {
     int choice;
-    
+
     while (1) {
         system("cls");
 
         char *c = student_menu(acc);
         printf("%s", c);
         free(c);
-        // printf("You are currently logged in as %s.\n\n", acc->email);
-        // printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n\n>> ");
 
         choice = get_input(1, 7);
 
@@ -92,7 +92,15 @@ int student_loop(account_t *acc) {
             wait_until_enter();
 
         } else if (choice == 5) {
-            // request_reduction(acc, acc->student_no);
+            int idx;
+            print_reductions();
+            fputs("\n", stdout);
+
+            printf("Select the reduction number: ");
+            idx = get_input(0, reductions_cnt() - 1);
+
+            request_reduction(acc, idx);
+
         } else if (choice == 6) {
             char curr_pw[100];
             char new_pw[100];
@@ -105,8 +113,9 @@ int student_loop(account_t *acc) {
             if (strcmp(curr_pw, new_pw) == 0) {
                 printf("Your new password cant be the same as the old one.\n");
                 wait_until_enter();
+
             } else {
-                account_t *sptr = student_ptr(acc->email);
+                account_t *sptr = account_ptr(acc->email);
                 strcpy(sptr->password, new_pw);
                 write_accounts();
             }
@@ -117,13 +126,188 @@ int student_loop(account_t *acc) {
             printf("Enter a student number: ");
             scanf("%d", &sno);
 
+            fputs("\n", stdout);
             print_sheet_idx(sheet_idx(sno));
+            fputs("\n", stdout);
 
             wait_until_enter();
         }
     }
 
     return 0;
+}
+
+/// @brief The flow will be in this loop as long as the user is logged in as a teacher account
+/// @return 0 if no errors, non-zero integer if there were errors
+int teacher_loop(account_t *acc) {
+    int choice;
+
+    while (1) {
+        system("cls");
+
+        char *c = teacher_menu(acc);
+        printf("%s", c);
+        free(c);
+
+        choice = get_input(1, 5);
+
+        if (choice == 1) {
+            break;
+
+        } else if (choice == 2) {
+            int prd;
+
+            printf("Which period do you want to see? (1 or 2): ");
+            scanf("%d", &prd);
+
+            groupby_sheet(prd);
+
+            wait_until_enter();
+
+        } else if (choice == 3) {
+            printf("Mode: login(teacher) -> Student requests\n\n");
+            printf("1. Move requests\n2. Outing requests\n\n>> ");
+
+            choice = get_input(1, 2);
+
+            if (choice == 1) {
+                char filename[256];
+                printf("%s\n", filename);
+                snprintf(filename, sizeof(filename), "%s_move.txt", acc->email);
+                print_requests(filename);
+                request_t *requests = load_requests(filename);
+
+                int idx, e;
+
+                printf("%s\n", filename);
+
+                while (1) {
+                    printf("Enter request index to accept, '-1' to exit:\n\n>> ");
+                    scanf("%d", &idx);
+
+                    if (idx == -1) {
+                        update_request(filename, requests);
+                        break;
+
+                    } else {
+                        e = accept_request(requests, idx);
+
+                        if (e == 1) {
+                            printf("Request of index %3d is already accepted\n\n", idx);
+
+                        } else if (e == 2) {
+                            printf("Index not found.\n\n");
+
+                        }
+                    }
+                }
+
+            } else if (choice == 2) {
+                char filename[256];
+                snprintf(filename, sizeof(filename), "%s_out.txt", acc->email);
+                print_requests(filename);
+                request_t *requests = load_requests(filename);
+
+                int idx, e;
+
+                while (1) {
+                    printf("Enter request index to accept, '-1' to exit:\n\n>> ");
+                    scanf("%d", &idx);
+
+                    if (idx == -1) {
+                        update_request(filename, requests);
+                        break;
+
+                    } else {
+                        e = accept_request(requests, idx);
+
+                        if (e == 1) {
+                            printf("Request of index %3d is already accepted\n\n", idx);
+
+                        } else if (e == 2) {
+                            printf("Index not found.\n\n");
+
+                        }
+                    }
+                }
+            }
+
+        } else if (choice == 4) {
+            printf("Mode: login(teacher) -> Reductions\n\n");
+            printf("1. Make new reduction\n2. Accept reductions\n\n>> ");
+
+            choice = get_input(1, 2);
+
+            if (choice == 1) {
+                int idx, e;
+                struct tm date = {0};
+                int time;
+                char loc[50];
+                int num;
+                while (1) {
+                    printf("Enter 1 to make new reduction, '-1' to exit:\n\n>> ");
+                    scanf("%d", &idx);
+                    if (idx == -1) break;
+                    else {
+                        printf("Enter date[YY MM DD], time, location, number of student for new reduction:\n>> ");
+                        scanf("%d %d %d %d %s %d", &date.tm_year, &date.tm_mon, &date.tm_mday, &time, loc, &num);
+                        e = register_reduction(acc, &date, time, loc, num);
+                        if (e == 1) {
+                            printf("Time information is inappropriate.\n\n");
+                        } else if (e == 2) {
+                            printf("Location is not available.\n\n");
+                        } else if (e == 4) {
+                            printf("Error. Please try again.\n\n");
+                        }
+                    }
+                }
+            } else if (choice == 2) {
+                print_tchreduction(acc);
+                int idx, e;
+                while (1) {
+                    printf("Enter reduction index to accept, '-1' to exit:\n\n>> ");
+                    scanf("%d", &idx);
+                    if (idx == -1) break;
+                    else {
+                        e = accept_reduction(acc, idx);
+                        if (e == 1) {
+                            printf("Reduction of index %3d is already accepted.\n\n", idx);
+                        } else if (e == 2) {
+                            printf("Recruitment of the reduction exceeded.\n\n");
+                        } else if (e == 3) {
+                            printf("Index not found/\n\n");
+                        } else if (e == 4) {
+                            printf("Index not found.\n\n");
+                        } else if (e == 0) {
+                            update_reduction(acc);
+                        }                        
+                    }
+                }
+            } 
+        } else if (choice == 5) {
+            char curr_pw[100];
+            char new_pw[100];
+
+            printf("Current password: ");
+            scanf(" %s", curr_pw);
+            printf("New password: ");
+            scanf(" %s", new_pw);
+
+            if (strcmp(curr_pw, new_pw) == 0) {
+                printf("Your new password cant be the same as the old one.\n");
+                wait_until_enter();
+
+            } else {
+                account_t *sptr = account_ptr(acc->email);
+                strcpy(sptr->password, new_pw);
+                write_accounts();
+            }
+        }
+    }
+}
+
+int admin_loop(account_t *acc) {
+
 }
 
 int start() {
@@ -180,6 +364,8 @@ int start() {
             if (role == 0) {
                 printf("Enter student number: ");
                 scanf("%d", &student_no);
+            } else if (role == 2) {
+                make_request_file(email);
             }
 
             // Make account
@@ -230,21 +416,19 @@ int start() {
 
             if (role == -1) {
                 printf("Login failed.\n\n");
+
+                wait_until_enter();
             } else {
                 // system("cls");
                 // printf("You are currently logged in as %s.\n\n", email);
 
                 // Print the menu according to the role
                 if (role == 0) {
-                    student_loop(student_ptr(email));
+                    student_loop(account_ptr(email));
                 } else if (role == 1) {
-                    printf("1. Log out\n2. Check spreadsheet\n3. Edit spreadsheet\n4. Make group\n5. Check groups\n6. Check accounts\n7. Delete account\n\n>> ");
-
-                    choice = get_input(1, 7);
+                    // admin stuff
                 } else {
-                    printf("1. Log out\n2. Check pending requests\n\n>> ");
-
-                    choice = get_input(1, 2);
+                    teacher_loop(account_ptr(email));
                 }
             }
         }

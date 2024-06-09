@@ -8,7 +8,7 @@
 #define REQUESTS_H
 
 typedef struct request request_t;
-int make_request_file(account_t *tch);
+int make_request_file(char *);
 int check_regex(const char *expression, char *s, int len);
 int request_is_valid(char *request, int option);
 int option_from_path(char *path);

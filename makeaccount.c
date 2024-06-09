@@ -218,7 +218,7 @@ int make_account(char *email, char *name, char *password, char *confirm_password
     } 
 
     // If student number is invalid
-    if (student_no / 1000 <= 0 || student_no / 1000 >= 4) {
+    if (role == 0 && (student_no / 1000 <= 0 || student_no / 1000 >= 4)) {
         return 5;
     }
 
@@ -277,7 +277,7 @@ int student_idx(char *email) {
 /// @brief Finds index by email
 /// @param email email
 /// @return pointer to the student account, -1 if not found
-account_t *student_ptr(char *email) {
+account_t *account_ptr(char *email) {
     for (int i = 0; i < cnt; i++) {
         if (strcmp(accounts[i].email, email) == 0) {
             return &accounts[i];
@@ -298,4 +298,34 @@ account_t *find_account_by_sno(int sno) {
     }
 
     return (account_t *) NULL;
+}
+
+/// @brief Finds account by name
+/// @param name name
+/// @return pointer to account_t object if found, NULL if not
+account_t *find_account_by_name(char *name) {
+    for (int i = 0; i < cnt; i++) {
+        if (strcmp(accounts[i].name, name) == 0) {
+            return &accounts[i];
+        }
+    }
+
+    return (account_t *) NULL;
+}
+
+/// @brief Finds account by index
+/// @param idx index
+/// @return pointer to account_t object if found, NULL if not
+account_t *find_account_by_idx(int idx) {
+    if (0 <= idx && idx < cnt) {
+        return &accounts[idx];
+    }
+
+    return (account_t *) NULL;
+}
+
+/// @brief Returns the number of accounts
+/// @return number of accounts
+int account_cnt() {
+    return cnt;
 }

@@ -15,17 +15,17 @@ struct request {
 typedef struct request request_t;
 
 /// @brief generates request files for new teacher user
-/// @param tch pointer to teacher account
-/// @return 0 if successful, 1 if move file already exists, 2 if out file already exists, 3 if failed to create move file, 4 if failed to create out file
-int make_request_file(char *name)
+/// @param email email of teacher account
+/// @return 0 if successful, 1 if move file already exists, 2 if out file already exists, 3 if reduction file already exists, 4 if failed to create move file, 5 if failed to create out file, 6 if failed to create reduction file
+int make_request_file(char *email)
 {
     FILE *fp_move, *fp_out;
-    char move_filename[256], out_filename[256], rd_filname[256];
+    char move_filename[256], out_filename[256], rd_filename[256];
 
     // 파일 이름 포인터로 생성
-    snprintf(move_filename, sizeof(move_filename), ".%s_move.txt", name);
-    snprintf(out_filename, sizeof(out_filename), ".%s_out.txt", name);
-    snprintf(rd_filname, sizeof(rd_filname), "./%s_reduction.txt", name)
+    snprintf(move_filename, sizeof(move_filename), "./%s_move.txt", email);
+    snprintf(out_filename, sizeof(out_filename), "./%s_out.txt", email);
+    snprintf(rd_filename, sizeof(rd_filename), "./%s_reduction.txt", email);
 
     // move 파일 존재 여부 확인
     fp_move = fopen(move_filename, "r");
@@ -37,7 +37,7 @@ int make_request_file(char *name)
     // move 파일 생성
     fp_move = fopen(move_filename, "w");
     if (fp_move == NULL){
-        return 3;
+        return 4;
     }
     fclose(fp_move);
 
@@ -51,7 +51,21 @@ int make_request_file(char *name)
     // out 파일 생성
     fp_out = fopen(out_filename, "w");
     if (fp_out == NULL){
-        return 4;
+        return 5;
+    }
+    fclose(fp_out);
+
+    // reduction 파일 존재 여부 확인
+    fp_out = fopen(rd_filename, "r");
+    if (fp_out != NULL){
+        fclose(fp_out);
+        return 3;
+    }
+
+    // reduction 파일 생성
+    fp_out = fopen(rd_filename, "w");
+    if (fp_out == NULL){
+        return 6;
     }
     fclose(fp_out);
 
@@ -102,9 +116,9 @@ int request_is_valid(char *request, int option)
     // option 4 => [YY.MM.DD] [student_id] [leave_timecode] [return_timecode]
 
     // 시각 데이터 regex
-    const char *date_regex = "^(\d{2})\.(0[1-9]|1[0-2])\.(0[1-9]|[12][0-9]|3[01])$";
+    const char *date_regex = "^(\\d{2})\\.(0[1-9]|1[0-2])\\.(0[1-9]|[12][0-9]|3[01])$";
     // password regex
-    const char *pw_regex = "^[A-Za-z\d!@#$%^&*()]$";
+    const char *pw_regex = "^[A-Za-z\\d!@#$%^&*()]$";
     // role regex
     const char *role_regex = "^[012]$";
     // student_id regex
@@ -248,7 +262,7 @@ int option_from_path(char *path)
         token = strtok(path, "_");
         if (token == NULL) {
             return 0;
-        } else if ((result = is_valid_name(token)) != 1) {
+        } else if ((result = is_valid_email(token, strlen(token))) != 1) {
             return result;
         } else {
             // teacher_name part matches
@@ -292,7 +306,9 @@ int len_request(FILE *fp)
 /// @return 0 if successful, 1 if file not found, 2 if request not valid, 3 if too many requests in file
 int write_request(char *path, char *request)
 {
-    int option  = option_from_path(path);
+    char temp[256];
+    strcpy(temp, path);
+    int option = option_from_path(temp);
     if (request_is_valid(request, option) == 1) {
         // request is valid
         FILE *fp;
@@ -336,7 +352,7 @@ int print_requests(char *path)
     if (fp == NULL) {
         return 1;
     } else {
-        while (fscanf(fp, "%s\n", &line) != EOF) {
+        while (fscanf(fp, " %s", line) != EOF) {
             printf("%s\n", line);
         }
         return 0;
@@ -350,7 +366,7 @@ request_t *load_requests(const char *path)
 {
     FILE *fp = fopen(path, "r");
     if (fp == NULL) {
-        return NULL
+        return NULL;
     }
     int len = len_request(fp);
     request_t *requests = malloc(sizeof(request_t) * len);
@@ -363,7 +379,7 @@ request_t *load_requests(const char *path)
         requests[i].accepted = accepted;
         strcpy(requests[i].request, request);
     }
-    return requests
+    return requests;
 }
 
 /// @brief Sets 'accepted' to 1 for request with specified index
@@ -372,7 +388,7 @@ request_t *load_requests(const char *path)
 /// @return 0 if successful, 1 if already accepted, 2 if idx not found
 int accept_request(request_t *requests, int idx)
 {
-    int len = sizeof(requests) / sizeof(reqest_t);
+    int len = sizeof(requests) / sizeof(request_t);
     for (int i=0; i<len; i++) {
         if (requests[i].idx == idx) {
             if (requests[i].accepted == 0) {
@@ -390,10 +406,12 @@ int accept_request(request_t *requests, int idx)
 /// @param path path to request file
 /// @param requests pointer to array of request_t
 /// @return 0 if successful, -1 if path invalid
-int update_request(const char *path, request_t *requests)
+int update_request(char *path, request_t *requests)
 {
-    int len = sizeof(requests) / sizeof(reqest_t);
-    int option = option_from_path(path);
+    char temp[256];
+    strcpy(temp, path);
+    int len = sizeof(requests) / sizeof(request_t);
+    int option = option_from_path(temp);
     if (option <= 0) {
         return -1;
     }
