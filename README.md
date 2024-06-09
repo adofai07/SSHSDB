@@ -32,11 +32,11 @@ stz -Id "UTC"
 
 |Name|File|
 |:---|:---|
-|최은호|`u8string.c`, `MoveSeat.py`|
-|안준혁|Project Manager|
-|고민재|`main.c`, `typing.h`, `makeaccount.c`|
-|신믿음|`getsheet.c`|
-|김유현|`groups.c`, `getinput.c`|
+|최은호|`u8string.c`, `getenv.c`, `effects.c`, `main.c`|
+|안준혁|Project Manager, `requests.c`, `main.c`|
+|고민재|`main.c`, `typing.h`, `makeaccount.c`, `spreadsheets-api`|
+|신믿음|`getsheet.c`, `student.c`, `proposal.c`|
+|김유현|`groups.c`, `getinput.c`, `reductions.c`, `main.c`|
 |남규영|None|
 
 ## 프로그래밍 스타일
