@@ -7,17 +7,25 @@
 
 #define MAX_REQUEST 500
 
+struct request {
+    int idx;
+    int accepted;
+    char request[256];
+};
+typedef struct request request_t;
+
 /// @brief generates request files for new teacher user
 /// @param tch pointer to teacher account
 /// @return 0 if successful, 1 if move file already exists, 2 if out file already exists, 3 if failed to create move file, 4 if failed to create out file
-int make_request_file(account_t *tch)
+int make_request_file(char *name)
 {
     FILE *fp_move, *fp_out;
-    char move_filename[256], out_filename[256];
+    char move_filename[256], out_filename[256], rd_filname[256];
 
     // 파일 이름 포인터로 생성
-    snprintf(move_filename, sizeof(move_filename), "./requests/%s_move.txt", tch->name);
-    snprintf(out_filename, sizeof(out_filename), "./requests/%s_out.txt", tch->name);
+    snprintf(move_filename, sizeof(move_filename), ".%s_move.txt", name);
+    snprintf(out_filename, sizeof(out_filename), ".%s_out.txt", name);
+    snprintf(rd_filname, sizeof(rd_filname), "./%s_reduction.txt", name)
 
     // move 파일 존재 여부 확인
     fp_move = fopen(move_filename, "r");
@@ -288,9 +296,7 @@ int write_request(char *path, char *request)
     if (request_is_valid(request, option) == 1) {
         // request is valid
         FILE *fp;
-        char req_path[256];
-        snprintf(req_path, sizeof(req_path), "./requests/%s", path);
-        fp = fopen(req_path, "r");
+        fp = fopen(path, "r");
         if (fp == NULL){
             // file not found
             fclose(fp);
@@ -300,8 +306,10 @@ int write_request(char *path, char *request)
             // file found
             fclose(fp);
             fp = NULL;
-            fp = fopen(req_path, "a");
+            fp = fopen(path, "a");
             if (len_request(fp) < MAX_REQUEST) {
+                int idx = len_request(fp);
+                fprintf(fp, "%3d 0 ", idx);      // '0' is for accepted == False
                 fprintf(fp, "%s\n", request);
                 fclose(fp);
                 fp = NULL;
@@ -335,52 +343,70 @@ int print_requests(char *path)
     }
 }
 
-/// @brief load all requests in a request file to an array
-/// @param path 
-/// @return a double pointer pointing to the start of the array, NULL if error
-char **load_requests(char *path)
+/// @brief load all requests in a request file to an array of request_t
+/// @param path path to request file
+/// @return a pointer pointing to the start of the array, NULL if error
+request_t *load_requests(const char *path)
 {
-    char loader[MAX_REQUEST][256];
-    char line[256];
-    int i = 0
     FILE *fp = fopen(path, "r");
     if (fp == NULL) {
-        return NULL;
+        return NULL
     }
+    int len = len_request(fp);
+    request_t *requests = malloc(sizeof(request_t) * len);
+    int idx;
+    int accepted;
+    char *request;
+    for (int i=0; i<len; i++) {
+        fscanf(fp, "%3d %d %s\n", &idx, &accepted, request);
+        requests[i].idx = idx;
+        requests[i].accepted = accepted;
+        strcpy(requests[i].request, request);
+    }
+    return requests
+}
 
-    char **lines = NULL;
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    int count = 0;
-    while ((read = getline(&line, &len, fp)) != -1) {
-        // remove newline character
-        if (lne[read - 1] == '\n') {
-            line[read - 1] = '\0';
-            read--;
-        }
-
-        // Allocate space for new line
-        char **new_lines = realloc(lines, (count + 1) * sizeof(char *));
-        if (!new_lines) {
-            perror("Failed to allocate memory");
-            for (int i=0; i<count; i++) {
-                free(lines[i]);
+/// @brief Sets 'accepted' to 1 for request with specified index
+/// @param requests pointer to array of request_t
+/// @param idx index to accept
+/// @return 0 if successful, 1 if already accepted, 2 if idx not found
+int accept_request(request_t *requests, int idx)
+{
+    int len = sizeof(requests) / sizeof(reqest_t);
+    for (int i=0; i<len; i++) {
+        if (requests[i].idx == idx) {
+            if (requests[i].accepted == 0) {
+                requests[i].accepted = 1;
+                return 0;
+            } else {
+                return 1;
             }
-            free(lines);
-            free(line);
-            fclose(fp);
-            return NULL;
         }
-        lines = new_lines;
-        lines[count] = strdup(line);    // Copy line into array
-        if (!lines[count]) {
-            perror("Failed to allocate memory for line");
-            break;
-        }
-        count++;
     }
-    free(line);     // Free the vuffer allocated by getline
+    return 2;
+}
+
+/// @brief Rewrites reqeust file from updated request_t
+/// @param path path to request file
+/// @param requests pointer to array of request_t
+/// @return 0 if successful, -1 if path invalid
+int update_request(const char *path, request_t *requests)
+{
+    int len = sizeof(requests) / sizeof(reqest_t);
+    int option = option_from_path(path);
+    if (option <= 0) {
+        return -1;
+    }
+    FILE *fp = fopen(path, "w");
+    for (int i=0; i<len; i++) {
+        if (request_is_valid(requests[i].request, option) == 1) {
+            fprintf(fp, "%3d %d %s\n", requests[i].idx, requests[i].accepted, requests[i].request);
+        } else {
+            printf("Request with index %3d is invalid.\n", requests[i].idx);
+            fprintf(fp, "%3d %d Invalid Request\n", requests[i].idx, requests[i].accepted);
+        }
+    }
     fclose(fp);
-    return lines;
+    fp = NULL;
+    return 0;
 }
