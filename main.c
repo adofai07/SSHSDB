@@ -17,6 +17,7 @@
 #include "student.h"
 #include "proposal.h"
 #include "getenv.h"
+#include "notes.h"
 
 /// @brief Pauses flow until ENTER is pressed
 void wait_until_enter() {
@@ -132,6 +133,9 @@ int student_loop(account_t *acc) {
             fputs("\n", stdout);
 
             wait_until_enter();
+
+        } else if (choice == 8) {
+            scan_proposal(acc);
         }
     }
 
@@ -303,6 +307,7 @@ int teacher_loop(account_t *acc) {
                 strcpy(sptr->password, new_pw);
                 write_accounts();
             }
+
         }
     }
 }
@@ -345,6 +350,7 @@ int admin_loop(account_t *acc) {
                 printf("%-*s%-*s%-*d%-*d%s\n", WIDTH, a->email, WIDTH, a->password,
                                                WIDTH, a->pos_pts, WIDTH, a->neg_pts, a->name);
             }
+
         } else if (choice == 3) {
             int sno;
             int pts;
@@ -387,6 +393,45 @@ int admin_loop(account_t *acc) {
 
                 printf("%s.neg_pts: %d -> %d\n", a->name, a->neg_pts - pts, a->neg_pts);
             }
+
+        } else if (choice == 5) {
+            printf("There are %d note(s):\n\n", get_note_cnt());
+            print_notes();
+
+            printf("1. Pop oldest note\n2. Add new note\n>> ");
+            choice = get_input(1, 2);
+
+            if (choice == 1) {
+                pop_note();
+                write_notes();
+
+            } else if (choice == 2) {
+                printf("Enter a new note (max 100 chrs): ");
+                while (getchar() != '\n');
+                char buf[100];
+                fgets(buf, 100, stdin);
+
+                int s = strlen(buf);
+
+                buf[s++] = '\n';
+                buf[s] = '\0';
+
+                add_note(buf);
+                write_notes();
+            }
+
+        } else if (choice == 6) {
+            int page;
+            printf("Enter page of proposals to view. (1 ~ 10)\n\n>> ");
+            scanf("%d", &page);
+            print_proposal_list(page);
+
+        } else if (choice == 7) {
+            int index;
+            printf("Enter index of proposal to view. (0 ~ 99)\n\n>> ");
+            scanf("%d", &index);
+            print_proposal(index);
+
         }
 
         printf("\n");
@@ -412,6 +457,7 @@ int start() {
     get_sheet();
     get_groups();
     get_reductions();
+    get_notes();
 
     int choice;
     int role;

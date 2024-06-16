@@ -7,6 +7,7 @@
 #include "getsheet.h"
 #include "getenv.h"
 #include "typing.h"
+#include "notes.h"
 #include "effects.h"
 
 #define SP(X,Y,...) \
@@ -92,6 +93,16 @@ char *student_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 16, "6. Change password");
     SP(tmp, c + (w + 1) * 17, "7. Check spreadsheet");
 
+    SP(tmp, c + (w + 1) * 9 + 75, "NOTES--------------------------------------------");
+
+    for (int i = 0; i < get_note_cnt(); i++) {
+        char s[100];
+        strcpy(s, get_ith_note(i));
+        s[strlen(s) - 1] = '\0';
+        
+        SP(tmp, c + (w + 1) * (11 + i) + 75, s);
+    }
+
     return c;
 }
 
@@ -168,7 +179,10 @@ char *admin_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 12, "2. Check all accounts");
     SP(tmp, c + (w + 1) * 13, "3. Give + points");
     SP(tmp, c + (w + 1) * 14, "4. Give - points");
-    SP(tmp, c + (w + 1) * 15, "5. ???");
+    SP(tmp, c + (w + 1) * 15, "5. Edit global notifications");
+    SP(tmp, c + (w + 1) * 16, "6. Print list of proposals");
+    SP(tmp, c + (w + 1) * 17, "7. Print a proposal's contents");
+
 
     return c;
 }
