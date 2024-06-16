@@ -133,3 +133,42 @@ char *teacher_menu(account_t *acc) {
 
     return c;
 }
+
+/// @brief Prints the menu for an admin account
+/// @param acc account
+/// @return string
+char *admin_menu(account_t *acc) {
+    char *c = (char *) malloc(sizeof(char) * (w + 1) * (h + 1));
+    char *_c = c;
+
+    for (int i = 0; i < h - 1; i++) {
+        for (int j = 0; j < w; j++) {
+            *_c++ = 0x20;
+        }
+        *_c++ = 0x0A;
+    }
+
+    *_c++ = 0x3E;
+    *_c++ = 0x3E;
+    *_c++ = 0x20;
+    *_c = 0x00;
+
+    char tmp[10000];
+
+    // sprintf(tmp, "Name: %s", acc->name);
+    // strncpy(c + (w + 1) * 0, tmp, strlen(tmp));
+    SP(tmp, c + (w + 1) * 0 , "Name: %s", acc->name);
+    SP(tmp, c + (w + 1) * 1 , "Email: %s", acc->email);
+    SP(tmp, c + (w + 1) * 2 , "Points: None");
+    SP(tmp, c + (w + 1) * 3 , "Period 1: None");
+    SP(tmp, c + (w + 1) * 4 , "Period 2: None");
+    SP(tmp, c + (w + 1) * 5 , "--------------------------------------------------");
+    SP(tmp, c + (w + 1) * 9 , "MENUS");
+    SP(tmp, c + (w + 1) * 11, "1. Log out");
+    SP(tmp, c + (w + 1) * 12, "2. Check all accounts");
+    SP(tmp, c + (w + 1) * 13, "3. ???");
+    SP(tmp, c + (w + 1) * 14, "4. ???");
+    SP(tmp, c + (w + 1) * 15, "5. ???");
+
+    return c;
+}

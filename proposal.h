@@ -25,8 +25,8 @@ extern struct proposal proposals[MAX_PROPOSALS];
 void load_proposals_from_file();
 void save_proposals_to_file();
 void delete_oldest_proposal();
-void scan_proposal(account_t *acc);
-void print_proposal_list(int page);
-void print_proposal(int index);
+void scan_proposal(account_t *);
+void print_proposal_list(int);
+void print_proposal(int);
 
 #endif

@@ -9,5 +9,6 @@ void effect_init();
 char *intro();
 char *student_menu(account_t *);
 char *teacher_menu(account_t *);
+char *admin_menu(account_t *); 
 
 #endif

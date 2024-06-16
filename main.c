@@ -307,8 +307,46 @@ int teacher_loop(account_t *acc) {
     }
 }
 
+/// @brief The flow will be in this loop as long as the user is logged in as an admin account
+/// @return 0 if no errors, non-zero integer if there were errors
 int admin_loop(account_t *acc) {
+    int choice;
 
+    while (1) {
+        system("cls");
+
+        char *c = admin_menu(acc);
+        printf("%s", c);
+        free(c);
+
+        choice = get_input(1, 5);
+
+        if (choice == 1) {
+            break;
+        } else if (choice == 2) {
+            const int WIDTH = 20;
+
+            printf("\nemail");
+            for (int i = 0; i < WIDTH - 5; i++) printf(" ");
+            printf("pw");
+            for (int i = 0; i < WIDTH - 2; i++) printf(" ");
+            printf("name\n");
+            for (int i = 0; i < WIDTH * 2 + 4; i++) printf("-");
+            printf("\n");
+
+            for (int i = 0; i < account_cnt(); i++) {
+                account_t *a = find_account_by_idx(i);
+
+                printf("%-*s%-*s%s\n", WIDTH, a->email, WIDTH, a->password, a->name);
+            }
+
+            printf("\n");
+            wait_until_enter();
+        }
+
+    }
+
+    return 0;
 }
 
 int start() {
@@ -427,7 +465,7 @@ int start() {
                 if (role == 0) {
                     student_loop(account_ptr(email));
                 } else if (role == 1) {
-                    // admin stuff
+                    admin_loop(account_ptr(email));
                 } else {
                     teacher_loop(account_ptr(email));
                 }
