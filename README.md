@@ -28,6 +28,12 @@ stz -Id "UTC"
 & .\main.exe
 ```
 
+`sheet.txt`를 실제 시트와 동기화하고 싶다면 `spreadsheets-api/get-spreadsheet.py`를 실행하면 된다.
+
+```bash
+python.exe spreadsheets-api/get_spreadsheet.py
+```
+
 ## 역할 분담
 
 |Name|File|
