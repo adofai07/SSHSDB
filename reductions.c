@@ -5,6 +5,7 @@
 #include "typing.h"
 #include "u8string.h"
 #include "makeaccount.h"
+#include "notes.h"
 #include "reductions.h"
 
 // Struct for reduction
@@ -293,6 +294,14 @@ int accept_reduction(account_t *tch, int idx)
 
             reductions[i].num--;
             stureducs[i].accepted = 1;
+
+            char buf[100];
+
+            snprintf(buf, 100, "%s ----request----> %s\n",
+                     find_account_by_sno(stureducs[i].stu_no)->email, tch->email);
+
+            add_note(buf);
+
             return 0;
         }
     }

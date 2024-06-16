@@ -276,7 +276,7 @@ int student_idx(char *email) {
 
 /// @brief Finds index by email
 /// @param email email
-/// @return pointer to the student account, -1 if not found
+/// @return pointer to the account, -1 if not found
 account_t *account_ptr(char *email) {
     for (int i = 0; i < cnt; i++) {
         if (strcmp(accounts[i].email, email) == 0) {

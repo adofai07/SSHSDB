@@ -54,10 +54,25 @@ int pop_note() {
 }
 
 int add_note(char *s) {
+    // if (s[strlen(s) - 1] != '\n') {
+    //     char *t = (char *) malloc(sizeof(char) * (strlen(s) + 2));
+
+    //     strcpy(t, s);
+
+    //     int n = strlen(t);
+
+    //     t[n++] = '\n';
+    //     t[n] = '\0';
+
+    //     strcpy(notes[cnt], t);
+
+    //     cnt++;
+    //     return cnt;
+    // }
+
     strcpy(notes[cnt], s);
 
     cnt++;
-
     return cnt;
 }
 

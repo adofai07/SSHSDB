@@ -93,14 +93,14 @@ char *student_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 16, "6. Change password");
     SP(tmp, c + (w + 1) * 17, "7. Check spreadsheet");
 
-    SP(tmp, c + (w + 1) * 9 + 75, "NOTES--------------------------------------------");
+    SP(tmp, c + (w + 1) * 9 + 50, "NOTES--------------------------------------------");
 
     for (int i = 0; i < get_note_cnt(); i++) {
         char s[100];
         strcpy(s, get_ith_note(i));
         s[strlen(s) - 1] = '\0';
         
-        SP(tmp, c + (w + 1) * (11 + i) + 75, s);
+        SP(tmp, c + (w + 1) * (11 + i) + 50, s);
     }
 
     return c;
@@ -141,6 +141,16 @@ char *teacher_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 13, "3. Student requests");
     SP(tmp, c + (w + 1) * 14, "4. Reductions");
     SP(tmp, c + (w + 1) * 15, "5. Change password");
+
+    SP(tmp, c + (w + 1) * 9 + 50, "NOTES--------------------------------------------");
+
+    for (int i = 0; i < get_note_cnt(); i++) {
+        char s[100];
+        strcpy(s, get_ith_note(i));
+        s[strlen(s) - 1] = '\0';
+        
+        SP(tmp, c + (w + 1) * (11 + i) + 50, s);
+    }
 
     return c;
 }
@@ -183,6 +193,15 @@ char *admin_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 16, "6. Print list of proposals");
     SP(tmp, c + (w + 1) * 17, "7. Print a proposal's contents");
 
+    SP(tmp, c + (w + 1) * 9 + 50, "NOTES--------------------------------------------");
+
+    for (int i = 0; i < get_note_cnt(); i++) {
+        char s[100];
+        strcpy(s, get_ith_note(i));
+        s[strlen(s) - 1] = '\0';
+        
+        SP(tmp, c + (w + 1) * (11 + i) + 50, s);
+    }
 
     return c;
 }
