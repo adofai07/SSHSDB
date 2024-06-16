@@ -82,7 +82,7 @@ char *student_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 2 , "Points: %+d / %+d", acc->pos_pts, acc->neg_pts);
     SP(tmp, c + (w + 1) * 3 , "Period 1: %s", get_sheet_by_sno(acc->student_no)->p1);
     SP(tmp, c + (w + 1) * 4 , "Period 2: %s", get_sheet_by_sno(acc->student_no)->p2);
-    SP(tmp, c + (w + 1) * 5 , "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    SP(tmp, c + (w + 1) * 5 , "--------------------------------------------------");
     SP(tmp, c + (w + 1) * 9 , "MENUS");
     SP(tmp, c + (w + 1) * 11, "1. Log out");
     SP(tmp, c + (w + 1) * 12, "2. Edit spreadsheet");
@@ -123,7 +123,7 @@ char *teacher_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 2 , "Points: None");
     SP(tmp, c + (w + 1) * 3 , "Period 1: None");
     SP(tmp, c + (w + 1) * 4 , "Period 2: None");
-    SP(tmp, c + (w + 1) * 5 , "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    SP(tmp, c + (w + 1) * 5 , "--------------------------------------------------");
     SP(tmp, c + (w + 1) * 9 , "MENUS");
     SP(tmp, c + (w + 1) * 11, "1. Log out");
     SP(tmp, c + (w + 1) * 12, "2. Print spreadsheet");

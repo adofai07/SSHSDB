@@ -18,6 +18,8 @@ struct proposal
     char title[MAX_TITLE_LENGTH];
 };
 
+typedef struct proposal proposal_t;
+
 extern struct proposal proposals[MAX_PROPOSALS];
 
 void load_proposals_from_file();

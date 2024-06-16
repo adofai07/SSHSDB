@@ -46,4 +46,17 @@ struct sheet_block {
 
 typedef struct sheet_block sheet_block_t;
 
+enum ERRORCODES {
+    ETCERROR = -1,
+    MEMERROR = -2,
+    FILEERROR = -3,
+    INVLDINDEX = -4,
+    PROPOSALFULL = -5,
+    NOPROPOSALS = -6,
+    INVLDCLSRM = -7,
+    FULLCLSRM = -8,
+    INVLDGROUP = -9,
+    INVLDACNT = -10
+};
+
 #endif

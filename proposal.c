@@ -2,7 +2,7 @@
 #include "typing.h"
 
 int proposal_count = 0;
-struct proposal proposals[MAX_PROPOSALS];
+proposal_t proposals[MAX_PROPOSALS];
 
 /// @brief Load proposals from proposal_list.txt
 void load_proposals_from_file()
@@ -24,7 +24,7 @@ void load_proposals_from_file()
 
 /// @brief Save a proposal to proposal_list.txt in append mode
 /// @param new_proposal Pointer to the new proposal to be saved
-void save_proposals_to_file(const struct proposal *new_proposal)
+void save_proposals_to_file(const proposal_t *new_proposal)
 {
     FILE *file = fopen("proposal_list.txt", "a");
     if (file == NULL)
@@ -151,7 +151,7 @@ void scan_proposal(account_t *acc)
         delete_oldest_proposal();
     }
 
-    struct proposal new_proposal;
+    proposal_t new_proposal;
     new_proposal.index = proposal_count;
     new_proposal.sno = acc->student_no;
 
@@ -222,7 +222,7 @@ void print_proposal(int index)
         return;
     }
 
-    struct proposal *p = &proposals[index];
+    proposal_t *p = &proposals[index];
 
     FILE *file = fopen("proposals.txt", "r");
     if (file == NULL)

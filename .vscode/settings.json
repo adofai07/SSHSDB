@@ -106,6 +106,8 @@
         "assert.h": "c",
         "typing.h": "c",
         "locale.h": "c",
-        "groups.h": "c"
+        "groups.h": "c",
+        "stdio.h": "c",
+        "proposal.h": "c"
     }
 }

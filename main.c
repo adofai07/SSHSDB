@@ -14,6 +14,7 @@
 #include "requests.h"
 #include "reductions.h"
 #include "u8string.h"
+#include "student.h"
 #include "proposal.h"
 #include "getenv.h"
 

@@ -2,9 +2,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "typing.h"
 #include "place.h"
 #include "student.h"
+#include "typing.h"
 
 /// @brief Sets the current time to the provided tm structure
 /// @param t double pointer to a tm structure
@@ -12,7 +12,7 @@
 int timeset(struct tm **t)
 {
     time_t timer = time(NULL);
-    *t = localtime(&timer);  // Get the current time and convert it to local time
+    *t = localtime(&timer); // Get the current time and convert it to local time
     return 0;
 }
 
@@ -24,7 +24,7 @@ int in_list_classroom(const char *list[], const char *classroom)
 {
     for (int i = 0; list[i] != NULL; i++)
     {
-        if (strcmp(classroom, list[i]) == 0)  // Compare the classroom with each entry in the list
+        if (strcmp(classroom, list[i]) == 0) // Compare the classroom with each entry in the list
             return 1;
     }
     return 0;
@@ -38,7 +38,7 @@ int index_classroom(const char *list[], const char *classroom)
 {
     for (int i = 0; list[i] != NULL; i++)
     {
-        if (strcmp(classroom, list[i]) == 0)  // Compare the classroom with each entry in the list
+        if (strcmp(classroom, list[i]) == 0) // Compare the classroom with each entry in the list
             return i;
     }
     return INVLDCLSRM;
@@ -74,11 +74,11 @@ int count_place(int p, const char *classroom)
     while (fscanf(fp_sheet, "%d %s %d %s %d %s", &student_number, student_name,
                   &some_count_1, place_1, &some_count_2, place_2) != EOF)
     {
-        if (p == 1 && strcmp(classroom, place_1) == 0)  // Count for period 1
+        if (p == 1 && strcmp(classroom, place_1) == 0) // Count for period 1
         {
             count++;
         }
-        else if (p == 2 && strcmp(classroom, place_2) == 0)  // Count for period 2
+        else if (p == 2 && strcmp(classroom, place_2) == 0) // Count for period 2
         {
             count++;
         }
@@ -130,14 +130,14 @@ int find_sno(int sno, FILE *file)
     // Reading the file until finding student's number
     while (fscanf(file, "%d", &student_number) != EOF)
     {
-        if (sno == student_number)  // Break if the student number matches
+        if (sno == student_number) // Break if the student number matches
             break;
         else
         {
-            fgets(buffer, 100, file);  // Read the rest of the line
+            fgets(buffer, 100, file); // Read the rest of the line
         }
     }
-    fseek(file, ftell(file) - 4, SEEK_SET);  // Move the file pointer back to the start of the student number
+    fseek(file, ftell(file) - 4, SEEK_SET); // Move the file pointer back to the start of the student number
     return 0;
 }
 
@@ -206,13 +206,13 @@ int update_sheet()
     // Read the file and update counts for each student
     while (fscanf(fp, "%d", &student_number) != EOF)
     {
-        point1 = ftell(fp);  // Save the current file position
+        point1 = ftell(fp); // Save the current file position
         fscanf(fp, " %s %d %s %d %s", student_name, &some_count_1, place_1, &some_count_2, place_2);
-        point2 = ftell(fp);  // Save the new file position
-        fseek(fp, point1 - 4, SEEK_SET);  // Move the file pointer back to the student number
+        point2 = ftell(fp);              // Save the new file position
+        fseek(fp, point1 - 4, SEEK_SET); // Move the file pointer back to the student number
         fprintf(fp, "%4d %-10s %03d %4s %03d %4s", student_number, student_name,
                 count_place(1, place_1), place_1, count_place(2, place_2), place_2);
-        fseek(fp, point2, SEEK_SET);  // Move the file pointer to the next student
+        fseek(fp, point2, SEEK_SET); // Move the file pointer to the next student
     }
 
     fclose(fp);
@@ -222,9 +222,14 @@ int update_sheet()
 /// @brief Prints the available classrooms for a given period
 /// @param acc pointer to the account structure
 /// @param p period number (1 or 2)
-/// @return 0 on success, FILEERROR on failure
+/// @return 0 on success, errorcodes on failure
 int print_available(account_t *acc, int p)
 {
+    if (p!=1 && p!=2)
+    {
+        return INVLDINDEX;
+    }
+
     FILE *fp_sheet = fopen("sheet.txt", "r");
     if (fp_sheet == NULL)
     {
@@ -250,9 +255,20 @@ int print_available(account_t *acc, int p)
 /// @brief Prints the students in a given classroom for a specified period
 /// @param p period number (1 or 2)
 /// @param classroom name of the classroom
-/// @return 0 on success, FILEERROR on failure
+/// @return 0 on success, errorcodes on failure
 int print_place(int p, char *classroom)
 {
+
+    if (p!=1 && p!=2)
+    {
+        return INVLDINDEX;
+    }
+
+    if (!in_list_classroom(all_plc, classroom))
+    {
+        return INVLDCLSRM; // Cannot find the classroom
+    }
+
     FILE *fp_sheet = fopen("sheet.txt", "r");
     if (fp_sheet == NULL)
     {
@@ -306,6 +322,11 @@ int print_place(int p, char *classroom)
 /// @return 0 on success, various error codes on failure
 int move_individual(int sno, int p, char *classroom, account_t *tch)
 {
+    if (p!=1 && p!=2)
+    {
+        return INVLDINDEX;
+    }
+
     if (!in_list_classroom(all_plc, classroom))
     {
         return INVLDCLSRM; // Cannot find the classroom
@@ -325,12 +346,12 @@ int move_individual(int sno, int p, char *classroom, account_t *tch)
     if (in_list_classroom(opt_plc, classroom))
     {
         sheet_block_t student;
-        int res = save_sno(sno, &student);  // Save the student information
+        int res = save_sno(sno, &student); // Save the student information
         if (res != 0)
         {
             return res;
         }
-        
+
         FILE *fp_sheet = fopen("sheet.txt", "r+");
         if (fp_sheet == NULL)
         {
@@ -338,10 +359,11 @@ int move_individual(int sno, int p, char *classroom, account_t *tch)
             return FILEERROR;
         }
 
-        res = find_sno(sno, fp_sheet);  // Find the student number in the file
+        res = find_sno(sno, fp_sheet); // Find the student number in the file
         if (res != 0)
         {
             fclose(fp_sheet);
+            printf("error");
             return res;
         }
 
@@ -355,7 +377,7 @@ int move_individual(int sno, int p, char *classroom, account_t *tch)
             fprintf(fp_sheet, "%d %-10s %03d %s %03d %s", student.student_no, student.name,
                     count_place(1, student.p1), student.p1, count_place(2, classroom) + 1, classroom);
         }
-        fclose(fp_sheet);    
+        fclose(fp_sheet);
     }
 
     else
@@ -377,9 +399,9 @@ int move_individual(int sno, int p, char *classroom, account_t *tch)
         }
 
         struct tm *t;
-        timeset(&t);  // Set the current time
-        fprintf(fp, "[%2d.%02d.%02d] [%d] [%d] [%s]\n", (t->tm_year)%100, 
-        (t->tm_mon)+1, (t->tm_mday), sno, p, classroom);
+        timeset(&t); // Set the current time
+        fprintf(fp, "[%2d.%02d.%02d] [%d] [%d] [%s]\n", (t->tm_year) % 100,
+                (t->tm_mon) + 1, (t->tm_mday), sno, p, classroom);
         fclose(fp);
     }
 
@@ -397,20 +419,19 @@ int move_individual(int sno, int p, char *classroom, account_t *tch)
 /// @return 0 on success, various error codes on failure
 int move_group(group_t *grp, int p, char *classroom, account_t *tch)
 {
+    if (p!=1 && p!=2)
+    {
+        return INVLDINDEX;
+    }
+
     if (!in_list_classroom(all_plc, classroom))
     {
         return INVLDCLSRM; // Cannot find the classroom
     }
 
-    int is_full = is_full_place(p, classroom);
-    if (is_full < 0)
+    if (count_place(p, classroom) + grp->size > classroom_limits[index_classroom(all_plc, classroom)])
     {
-        return is_full; // Return the error code from is_full_place
-    }
-
-    if (is_full)
-    {
-        return FULLCLSRM; // The classroom is full
+        return FULLCLSRM;
     }
 
     if (grp == NULL)
@@ -422,7 +443,7 @@ int move_group(group_t *grp, int p, char *classroom, account_t *tch)
     {
         for (int i = 0; i < grp->size; i++)
         {
-            int res = move_individual((grp->members)[i], p, classroom, tch);  // Move each student individually
+            int res = move_individual((grp->members)[i], p, classroom, tch); // Move each student individually
             if (res != 0)
             {
                 return res;
@@ -449,11 +470,11 @@ int move_group(group_t *grp, int p, char *classroom, account_t *tch)
         }
 
         struct tm *t;
-        timeset(&t);  // Set the current time
+        timeset(&t); // Set the current time
         for (int i = 0; i < grp->size; i++)
         {
-            fprintf(fp, "[%2d.%02d.%02d] [%d] [%d] [%s]\n", (t->tm_year)%100, 
-            (t->tm_mon)+1, (t->tm_mday), (grp->members)[i], p, classroom);
+            fprintf(fp, "[%2d.%02d.%02d] [%d] [%d] [%s]\n", (t->tm_year) % 100,
+                    (t->tm_mon) + 1, (t->tm_mday), (grp->members)[i], p, classroom);
         }
         fclose(fp);
     }
@@ -492,10 +513,9 @@ int outing_individual(account_t *acc, int leave, int rtn, account_t *tch)
     }
 
     struct tm *t;
-    timeset(&t);  // Set the current time
-    fprintf(fp, "[%2d.%02d.%02d] [%d] [%d:00] [%d:00]\n", (t->tm_year)%100, 
-    (t->tm_mon)+1, (t->tm_mday), acc->student_no, leave, rtn);
-
+    timeset(&t); // Set the current time
+    fprintf(fp, "[%2d.%02d.%02d] [%d] [%d:00] [%d:00]\n", (t->tm_year) % 100,
+            (t->tm_mon) + 1, (t->tm_mday), acc->student_no, leave, rtn);
     fclose(fp);
     return 0;
 }
@@ -533,11 +553,11 @@ int outing_group(group_t *grp, int leave, int rtn, account_t *tch)
     }
 
     struct tm *t;
-    timeset(&t);  // Set the current time
-    for(int i=0; i<grp->size; i++)
+    timeset(&t); // Set the current time
+    for (int i = 0; i < grp->size; i++)
     {
-        fprintf(fp, "[%2d.%02d.%02d] [%d] [%d:00] [%d:00]\n", (t->tm_year)%100, 
-        (t->tm_mon)+1, (t->tm_mday), (grp->members)[i], leave, rtn);
+        fprintf(fp, "[%2d.%02d.%02d] [%d] [%d:00] [%d:00]\n", (t->tm_year) % 100,
+                (t->tm_mon) + 1, (t->tm_mday), (grp->members)[i], leave, rtn);
     }
 
     fclose(fp);
@@ -550,7 +570,7 @@ int outing_group(group_t *grp, int leave, int rtn, account_t *tch)
 /// @return 0 on success
 int home(account_t *acc, account_t *tch)
 {
-    int res1 = move_individual(acc->student_no, 1, "home", tch);  // Move student home for period 1
-    int res2 = move_individual(acc->student_no, 2, "home", tch);  // Move student home for period 2
+    int res1 = move_individual(acc->student_no, 1, "home", tch); // Move student home for period 1
+    int res2 = move_individual(acc->student_no, 2, "home", tch); // Move student home for period 2
     return (res1 == 0 && res2 == 0) ? 0 : ETCERROR;
 }
