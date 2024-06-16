@@ -74,13 +74,13 @@ int get_accounts() {
 /// @return 0 if no errors, 1 if file write error
 int write_accounts() {
     // Delete the file
-    if (remove("accounts.txt")) {
-        fprintf(stderr, "Failed to delete file.\n");
-        return 1;
-    }
+    // if (remove("accounts.txt")) {
+    //     fprintf(stderr, "Failed to delete file.\n");
+    //     return 1;
+    // }
 
     // Recreate the file
-    FILE *fptr = fopen("accounts.txt", "w+");
+    FILE *fptr = fopen("accounts.txt", "w");
 
     // Error while opening file
     if (fptr == NULL) {

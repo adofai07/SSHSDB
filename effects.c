@@ -166,8 +166,8 @@ char *admin_menu(account_t *acc) {
     SP(tmp, c + (w + 1) * 9 , "MENUS");
     SP(tmp, c + (w + 1) * 11, "1. Log out");
     SP(tmp, c + (w + 1) * 12, "2. Check all accounts");
-    SP(tmp, c + (w + 1) * 13, "3. ???");
-    SP(tmp, c + (w + 1) * 14, "4. ???");
+    SP(tmp, c + (w + 1) * 13, "3. Give + points");
+    SP(tmp, c + (w + 1) * 14, "4. Give - points");
     SP(tmp, c + (w + 1) * 15, "5. ???");
 
     return c;

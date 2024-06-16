@@ -322,7 +322,8 @@ int admin_loop(account_t *acc) {
         choice = get_input(1, 5);
 
         if (choice == 1) {
-            break;
+            return 0;
+
         } else if (choice == 2) {
             const int WIDTH = 20;
 
@@ -330,6 +331,10 @@ int admin_loop(account_t *acc) {
             for (int i = 0; i < WIDTH - 5; i++) printf(" ");
             printf("pw");
             for (int i = 0; i < WIDTH - 2; i++) printf(" ");
+            printf("+");
+            for (int i = 0; i < WIDTH - 1; i++) printf(" ");
+            printf("-");
+            for (int i = 0; i < WIDTH - 1; i++) printf(" ");
             printf("name\n");
             for (int i = 0; i < WIDTH * 2 + 4; i++) printf("-");
             printf("\n");
@@ -337,12 +342,55 @@ int admin_loop(account_t *acc) {
             for (int i = 0; i < account_cnt(); i++) {
                 account_t *a = find_account_by_idx(i);
 
-                printf("%-*s%-*s%s\n", WIDTH, a->email, WIDTH, a->password, a->name);
+                printf("%-*s%-*s%-*d%-*d%s\n", WIDTH, a->email, WIDTH, a->password,
+                                               WIDTH, a->pos_pts, WIDTH, a->neg_pts, a->name);
             }
+        } else if (choice == 3) {
+            int sno;
+            int pts;
 
-            printf("\n");
-            wait_until_enter();
+            printf("Enter student number: ");
+            scanf("%d", &sno);
+
+            account_t *a = find_account_by_sno(sno);
+
+            if (a == NULL) {
+                printf("Student number not found.\n");
+            } else {
+                printf("Enter amount of points: ");
+                scanf("%d", &pts);
+
+                a->pos_pts += pts;
+
+                write_accounts();
+
+                printf("%s.pos_pts: %d -> %d\n", a->name, a->pos_pts - pts, a->pos_pts);
+            }
+        } else if (choice == 4) {
+            int sno;
+            int pts;
+
+            printf("Enter student number: ");
+            scanf("%d", &sno);
+
+            account_t *a = find_account_by_sno(sno);
+
+            if (a == NULL) {
+                printf("Student number not found.\n");
+            } else {
+                printf("Enter amount of points: ");
+                scanf("%d", &pts);
+
+                a->neg_pts += pts;
+
+                write_accounts();
+
+                printf("%s.neg_pts: %d -> %d\n", a->name, a->neg_pts - pts, a->neg_pts);
+            }
         }
+
+        printf("\n");
+        wait_until_enter();
 
     }
 
